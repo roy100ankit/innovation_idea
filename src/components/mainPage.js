@@ -49,7 +49,7 @@ class MainPage extends Component {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+            {['Main Projects', 'My Tasks', 'Views' ].map((text, index) => (
               <ListItem button key={text}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -60,7 +60,7 @@ class MainPage extends Component {
           </List>
           <Divider />
           <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
+            {['Reports', 'Configure Steps', 'Edit Form'].map((text, index) => (
               <ListItem button key={text}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -78,7 +78,7 @@ class MainPage extends Component {
                 <VirtualList header={'Planning'}/>
                 <VirtualList header={'Execute'}/>
                 <VirtualList header={'Completed'}/> */}
-                 <TaskList header={'Not Started'}/>
+                 <TaskList header={'Not Started'} addButton={true}/>
                 <TaskList header={'Planning'}/>
                 <TaskList header={'Execute'}/>
                 <TaskList header={'Completed'}/>
