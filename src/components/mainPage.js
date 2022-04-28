@@ -29,6 +29,7 @@ class MainPage extends Component {
     }
     render(){
         return (
+          <React.Fragment>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
                 <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
@@ -60,7 +61,7 @@ class MainPage extends Component {
           </List>
           <Divider />
           <List>
-            {['Reports', 'Configure Steps', 'Edit Form'].map((text, index) => (
+            {['Reports', 'Configure Steps', 'Edit Form', 'Wiki'].map((text, index) => (
               <ListItem button key={text}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -71,21 +72,35 @@ class MainPage extends Component {
           </List>
         </Box>
       </Drawer>
-            <div>
+            {/* <div>
                 Main Projects
                 <div style={{display:"flex", justifyContent:"space-between", marginTop:'10%'}}>
-                {/* <VirtualList header={'Not Started'}/>
+                <VirtualList header={'Not Started'}/>
                 <VirtualList header={'Planning'}/>
                 <VirtualList header={'Execute'}/>
-                <VirtualList header={'Completed'}/> */}
+                <VirtualList header={'Completed'}/>
                  <TaskList header={'Not Started'} addButton={true}/>
                 <TaskList header={'Planning'}/>
                 <TaskList header={'Execute'}/>
                 <TaskList header={'Completed'}/>
                 </div>
                  
-            </div>
+            </div> */}
+            <Box
+            component="main" sx={{ flexGrow: 1, p: 3 }}
+            >
+              <Toolbar />
+              <div style={{display:"flex", justifyContent:"space-evenly"}}>
+              <TaskList header={'Not Started'} addButton={true}/>
+                <TaskList header={'Planning'}/>
+                <TaskList header={'Execute'}/>
+                <TaskList header={'Completed'}/>
+                </div>
             </Box>
+           
+            </Box>
+            
+            </React.Fragment>
         )
     }
 }

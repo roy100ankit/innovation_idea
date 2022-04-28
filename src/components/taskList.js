@@ -87,7 +87,7 @@ class taskList extends Component{
             </div>
             
             <Box
-            sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper',overflow:'scroll',
+            sx={{ width: '15rem', height: 400, maxWidth: 360, bgcolor: 'background.paper',overflow:'scroll',
                 overflowX:'hidden',marginTop:'4%' }}
             >
             {
