@@ -41,11 +41,6 @@ function renderRow(props) {
   return (
     <ListItem style={style} key={index} component="div" disablePadding>
     <ListItemButton>
-    {/* <Stack spacing={200}>
-    <Item>
-      <ListItemText primary={`Item ${index + 1}`} />
-    </Item>
-      </Stack> */}
       <Stack 
       spacing={20}
       direction="column"
