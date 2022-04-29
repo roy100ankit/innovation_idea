@@ -14,6 +14,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
+import axios from 'axios'
 
 const drawerWidth = 240;
 class MainPage extends Component {
@@ -21,11 +23,14 @@ class MainPage extends Component {
     constructor(props){
         super(props)
         this.state={
-            notStarted:[],
-            planning:[],
-            execute:[],
-            completed:[]
+            task:[]
         }
+    }
+    componentDidMount(){
+         axios.get('https://jsonplaceholder.typicode.com/users')
+          .then(res=> {
+            this.setState({task: res.data})
+          })
     }
     render(){
         return (
@@ -91,10 +96,10 @@ class MainPage extends Component {
             >
               <Toolbar />
               <div style={{display:"flex", justifyContent:"space-evenly"}}>
-              <TaskList header={'Not Started'} addButton={true}/>
-                <TaskList header={'Planning'}/>
-                <TaskList header={'Execute'}/>
-                <TaskList header={'Completed'}/>
+              <TaskList header={'Not Started'} addButton={true} task= {this.state.task}/>
+                <TaskList header={'Planning'} task={this.state.task}/>
+                <TaskList header={'Execute'} task={this.state.task}/>
+                <TaskList header={'Completed'} task={this.state.task}/>
                 </div>
             </Box>
            

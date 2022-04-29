@@ -31,7 +31,8 @@ const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
     padding: theme.spacing(3),
     textAlign: 'center',
-    height: '20rem',
+    height: 'auto',
+    padding: '11px',
     color: theme.palette.text.secondary,
     backgroundColor:'#e2edf6'
     }));
@@ -40,43 +41,13 @@ class taskList extends Component{
     constructor(props){
         super(props)
         this.state={
-            notStarted:[
-                {
-                  id:0,
-                  title:"Shrimp and Chorizo Paella",
-                  subheader:'September 14, 2016'
-                },
-                {
-                  id:1,
-                  title:"Arabiata Pasta",
-                  subheader:'September 14, 2016'
-                },
-                {
-                  id:2,
-                  title:"Shrimp and Chorizo Paella",
-                  subheader:'September 14, 2016'
-                },
-                {
-                  id:3,
-                  title:"Shrimp and Chorizo Paella",
-                  subheader:'September 14, 2016'
-                },
-                {
-                  title:"Shrimp and Chorizo Paella",
-                  subheader:'September 14, 2016'
-                },
-                {
-                  id:4,
-                  title:"Shrimp and Chorizo Paella",
-                  subheader:'September 14, 2016'
-                },
-              ]
+  
         }
     }
 
    
     render(){
-      const { addButton} = this.props
+      const { addButton, task} = this.props
         return (
             <React.Fragment >
               
@@ -87,18 +58,32 @@ class taskList extends Component{
             </div>
             
             <Box
-            sx={{ width: '15rem', height: 400, maxWidth: 360, bgcolor: 'background.paper',overflow:'scroll',
+            sx={{ width: '15rem', height: '33rem', maxWidth: 360, bgcolor: 'background.paper',overflow:'scroll',
                 overflowX:'hidden',marginTop:'4%' }}
             >
-            {
-                this.state.notStarted.map(i=>{
-                return (
-                    <Stack spacing={12}>
-                    <Item><CardTemplate/></Item>           
-                    </Stack>
+            { 
+            
+                // this.state.notStarted.map(i=>{
+                // return (
+                //     <Stack spacing={12}>
+                //     <Item><CardTemplate/></Item>           
+                //     </Stack>
                 
-                )
-                })
+                // )
+                // })
+      
+                  <Stack spacing={5}>
+                    {
+                      task.length>0 ?
+                      task.map(item=>{
+                        return (
+                          <Item><CardTemplate item={item}/></Item> 
+                        )
+                      })
+                     
+                      : null
+                    }          
+                  </Stack>
             }
             </Box>
             </div>

@@ -8,6 +8,8 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
@@ -16,6 +18,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DateRangeIcon from '@mui/icons-material/DateRange';
+import { padding } from '@mui/system';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -28,7 +31,7 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function CardTemplate() {
+export default function CardTemplate(props) {
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -36,7 +39,7 @@ export default function CardTemplate() {
   };
 
   return (
-    <Card sx={{ maxWidth: 345, height:"15rem" }}>
+    <Card sx={{ maxWidth: 345, height:"auto" }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -48,7 +51,7 @@ export default function CardTemplate() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
+        title={props.item.name}
         subheader="September 14, 2016"
       />
       {/* <CardMedia
@@ -79,8 +82,16 @@ export default function CardTemplate() {
         >
           <ExpandMoreIcon />
         </ExpandMore>
+        
+       
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+      <Stack spacing={1} sx={{padding : "10px"}}>
+        
+        <Chip label={props.item.address.city} />
+        <Chip label={props.item.address.street} variant="outlined"/>
+        <Chip label={props.item.address.city} />
+      </Stack>
+      {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>Method:</Typography>
           <Typography paragraph>
@@ -108,7 +119,7 @@ export default function CardTemplate() {
             Set aside off of the heat to let rest for 10 minutes, and then serve.
           </Typography>
         </CardContent>
-      </Collapse>
+      </Collapse> */}
     </Card>
   );
 }
