@@ -27,12 +27,20 @@ class MainPage extends Component {
         }
     }
     componentDidMount(){
-         axios.get('https://jsonplaceholder.typicode.com/users')
-          .then(res=> {
-            this.setState({task: res.data})
-          })
+        //  axios.get('https://jsonplaceholder.typicode.com/users')
+        //   .then(res=> {
+        //     this.setState({task: res.data})
+        //   })
+        axios.get(`${process.env.REACT_APP_URL}`)
+        .then(res=> {
+          console.log('res Data',res.data)
+          this.setState({task: res.data})
+          console.log('task :', this.state.task.NotStarted)
+        })
     }
     render(){
+      const {task} = this.state
+      console.log('task in Mainpage', task)
         return (
           <React.Fragment>
             <Box sx={{ display: 'flex' }}>
@@ -96,10 +104,10 @@ class MainPage extends Component {
             >
               <Toolbar />
               <div style={{display:"flex", justifyContent:"space-evenly"}}>
-              <TaskList header={'Not Started'} addButton={true} task= {this.state.task}/>
-                <TaskList header={'Planning'} task={this.state.task}/>
-                <TaskList header={'Execute'} task={this.state.task}/>
-                <TaskList header={'Completed'} task={this.state.task}/>
+              <TaskList header={'Not started'} addButton={true} data= {this.state.task.projectRecords}/>
+                <TaskList header={'Planning'} data={this.state.task.projectRecords}/>
+                <TaskList header={'In-Progress'} data={this.state.task.projectRecords}/>
+                <TaskList header={'Completed'} data={this.state.task.projectRecords}/>
                 </div>
             </Box>
            

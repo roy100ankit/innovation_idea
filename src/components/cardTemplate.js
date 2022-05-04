@@ -10,9 +10,13 @@ import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import CommentIcon from '@mui/icons-material/Comment';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -33,13 +37,20 @@ const ExpandMore = styled((props) => {
 
 export default function CardTemplate(props) {
   const [expanded, setExpanded] = React.useState(false);
-
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   return (
-    <Card sx={{ maxWidth: 345, height:"auto" }}>
+    <Card sx={{ maxWidth: 345, height:"auto",padding:'3px' }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -48,11 +59,35 @@ export default function CardTemplate(props) {
         }
         action={
           <IconButton aria-label="settings">
-            <MoreVertIcon />
+            {/* <MoreVertIcon /> */}
+            {/* <Button
+        id="basic-button"
+        aria-controls={open ? 'basic-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? 'true' : undefined}
+        onClick={handleClick}
+      >
+         <MoreVertIcon onClick={handleClick}/>
+      </Button> */}
+       <MoreVertIcon onClick={handleClick}/>
+            <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={handleClose}>Accept</MenuItem>
+        <MenuItem onClick={handleClose}>Reject</MenuItem>
+        <MenuItem onClick={handleClose}>Edit</MenuItem>
+      </Menu>
           </IconButton>
+          
         }
-        title={props.item.name}
-        subheader="September 14, 2016"
+        title={props.item.projectTitle}
+        subheader={props.item.projectId}
       />
       {/* <CardMedia
         component="img"
@@ -68,12 +103,13 @@ export default function CardTemplate(props) {
         </Typography>
       </CardContent> */}
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
+        {/* <IconButton aria-label="add to favorites">
           <DateRangeIcon />
         </IconButton>
         <IconButton aria-label="share">
           <ShareIcon />
-        </IconButton>
+        </IconButton> */}
+        <CommentIcon color="primary"/>
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
@@ -85,14 +121,40 @@ export default function CardTemplate(props) {
         
        
       </CardActions>
-      <Stack spacing={1} sx={{padding : "10px"}}>
+      <Stack spacing={2} sx={{padding : "10px", display: "contents"}} direction="row">
         
-        <Chip label={props.item.address.city} />
+        {/* <Chip label={props.item.address.city} />
         <Chip label={props.item.address.street} variant="outlined"/>
-        <Chip label={props.item.address.city} />
+        <Chip label={props.item.address.city} /> */}
+        {
+          props.item && props.item.comments.length >0 ?
+          props.item.teamMember.map(e=>{
+            return(
+              <Chip label={e.id} variant="outlined"/>
+            )
+          }):
+          null
+        }
+         {/* {
+          props.item && props.item.tags.length >0 ?
+          props.item.tags.forEach(e=>{
+            return(
+              <Chip label={e} />
+            )
+          }):
+          null
+        } */}
+         {/* <Chip label={'sdfd'} />
+         <Chip label={'sdfsdf'} variant="outlined"/>
+         <Chip label={'sdgdfs'} />
+         <Chip label={'sdfsdf'} variant="outlined"/>
+         <Chip label={'sdgdfs'} />
+         <Chip label={'sdgdfs'} />
+         <Chip label={'sdfsdf'} variant="outlined"/>
+         <Chip label={'sdgdfs'} /> */}
       </Stack>
-      {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        {/* <CardContent>
           <Typography paragraph>Method:</Typography>
           <Typography paragraph>
             Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
@@ -118,8 +180,14 @@ export default function CardTemplate(props) {
           <Typography>
             Set aside off of the heat to let rest for 10 minutes, and then serve.
           </Typography>
+        </CardContent> */}
+        <CardContent>
+          <Typography paragraph>Project Description:</Typography>
+          <Typography paragraph>
+            {props.item.projectDescription}
+          </Typography>          
         </CardContent>
-      </Collapse> */}
+      </Collapse>
     </Card>
   );
 }

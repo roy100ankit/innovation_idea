@@ -47,7 +47,8 @@ class taskList extends Component{
 
    
     render(){
-      const { addButton, task} = this.props
+      const { addButton, data, header} = this.props
+      console.log('task in props 9', data)
         return (
             <React.Fragment >
               
@@ -72,13 +73,16 @@ class taskList extends Component{
                 // )
                 // })
       
-                  <Stack spacing={5}>
+                  <Stack spacing={3}>
                     {
-                      task.length>0 ?
-                      task.map(item=>{
-                        return (
-                          <Item><CardTemplate item={item}/></Item> 
-                        )
+                      data && data.length >0  ?
+                      data.map(item=>{
+                        if(item.status === header){
+                          return (
+                            <Item><CardTemplate item={item}/></Item> 
+                          )
+                        }
+                        
                       })
                      
                       : null
