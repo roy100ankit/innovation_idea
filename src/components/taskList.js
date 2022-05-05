@@ -24,7 +24,10 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CardTemplate from './cardTemplate'
+import AddTask from './addTask'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import axios from 'axios';
+import { Article } from '@mui/icons-material';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -44,7 +47,28 @@ class taskList extends Component{
   
         }
     }
-
+    addCard = () =>{
+      const item= {
+        "projectId": "MT-15",
+        "projectTitle": "Demo Tool",
+        "projectDescription": "Testing",
+        "status": "Not started",
+        "complexity": "Moderate",
+        "usefulInfo": "all the related documents are attached",
+        "comments": [],
+        "submittedBy": "Amol Sathewad",
+        "teamMember": [],
+        "startDate": "29/04/2022",
+        "endDate": null
+    }
+    console.log('data99', this.props.data)
+    let finalItems = this.props.data.push(item)
+    console.log('finalItems', finalItems)
+    axios.post(`${process.env.REACT_APP_URL}`,this.props.data)
+    .then(res=>{
+      console.log('POST response', res)
+    })
+  }
    
     render(){
       const { addButton, data, header} = this.props
@@ -55,7 +79,8 @@ class taskList extends Component{
             <div>
                 <div style={{display:'flex', justifyContent:'space-around'}}>
                 {this.props.header}
-                {addButton ? <AddCircleIcon color="primary" baseClassName="fas" className="fa-plus-circle" /> : null}
+                {/* {addButton ? <AddCircleIcon color="primary" baseClassName="fas" className="fa-plus-circle" onClick={this.addCard}/> : null} */}
+                {addButton ? <AddTask/> : null}
             </div>
             
             <Box
