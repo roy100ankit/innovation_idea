@@ -23,12 +23,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { padding } from '@mui/system';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -54,15 +48,6 @@ export default function CardTemplate(props) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-
-  const [open1, setOpen] = React.useState(false);
-  const [disabled, setDisabled] = React.useState(true);
-  const [status, setStatus] = React.useState(null);
-
-    const handleClose1 = () => {
-      setOpen(false);
-    };
-
 
   return (
     <Card sx={{ maxWidth: 345, height:"auto",padding:'3px' }}>
@@ -94,43 +79,16 @@ export default function CardTemplate(props) {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={ ()=>{setOpen(true)
-        setStatus("Approve")}}>Approve</MenuItem>
-        <MenuItem onClick={ ()=>{setOpen(true)
-        setStatus("Reject")}}>Reject</MenuItem>
-        <MenuItem onClick={ ()=>{setOpen(true)
-        setStatus("Update")}}>Edit</MenuItem>
+        <MenuItem onClick={handleClose}>Accept</MenuItem>
+        <MenuItem onClick={handleClose}>Reject</MenuItem>
+        <MenuItem onClick={handleClose}>Edit</MenuItem>
       </Menu>
           </IconButton>
-           
+          
         }
         title={props.item.projectTitle}
         subheader={props.item.projectId}
       />
-      <Dialog open={open1} onClose={handleClose1}>
-        <DialogTitle>Are you sure to {status} this project?</DialogTitle>
-        <DialogContent>
-        Project Id : {props.item.projectId}<br/>
-        Project Name : {props.item.projectTitle}<br/>
-        Status : {props.item.status}
-
-
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Comment"
-            type="text"
-            inputProps={{ maxLength: 11 }}
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose1}>Cancel</Button>
-          <Button onClick={handleClose1}>{status}</Button>
-        </DialogActions>
-      </Dialog>
       {/* <CardMedia
         component="img"
         height="194"
