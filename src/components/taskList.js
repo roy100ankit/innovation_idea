@@ -44,7 +44,20 @@ class taskList extends Component{
     constructor(props){
         super(props)
         this.state={
-  
+          isOpen: false,
+          myCar:'',
+          myCar1:'',
+          chars_left: 2000,
+          chars_left1: 4000,
+          max_char:2000,
+          max_char1:4000,
+          project_name:'',
+          discripten:'any data',
+          usefull_info:'some data',
+          comments: 'any',
+          submit_date:'5/5/2022',
+          team_meber:'rafi d',
+          submit_by:'rafi '
         }
     }
     addCard = () =>{
@@ -72,7 +85,6 @@ class taskList extends Component{
    
     render(){
       const { addButton, data, header} = this.props
-      console.log('task in props 9', data)
         return (
             <React.Fragment >
               
