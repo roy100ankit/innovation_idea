@@ -18,6 +18,8 @@ import { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
+import DatePicker from "react-datepicker";  
+import "react-datepicker/dist/react-datepicker.css"; 
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -78,7 +80,8 @@ BootstrapDialogTitle.propTypes = {
 
 export default function AddTask() {
   const [open, setOpen] = React.useState(false);
-  const [currency, setCurrency] = React.useState('0');
+  const [currency, setCurrency] = React.useState('3');
+  const [phase, setPhase] = React.useState('Not Started');
 
   const initialValues={
     projectTitle:'',
@@ -88,14 +91,16 @@ export default function AddTask() {
     usefulInfo:'',
     comments:'',
     submittedBy:'',
-    teamMember:[]
+    teamMember:[],
+    // projectPhase:[]
 
   }
   const [formValues, setFormValues] = useState(initialValues)
   const  [formErrors, setFormErrors] = useState({})
   const [isSubmit, setIsSubmit] = useState(false)
   const  [fieldError, setFieldError] = useState(false)
-  
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const currencies = [
     {
       value: '1',
@@ -117,6 +122,27 @@ export default function AddTask() {
         value: '5',
         label: '5',
     }
+  ];const projectPhase = [
+    {
+      value: 'Not Started',
+      label: 'Not Started',
+    },
+    {
+      value: 'Planned',
+      label: 'Planned',
+    },
+    {
+      value: 'Eecution',
+      label: 'Eecution',
+    },
+    {
+      value: 'Deployed',
+      label: 'Deployed',
+    },
+    {
+        value: 'Discard',
+        label: 'Discard',
+    }
   ];
   const teamMember=[
     {name:'Amol Sathewad', id:1},
@@ -127,6 +153,13 @@ export default function AddTask() {
     {name:'Rafi Dudekula', id:6},
     {name:'Ankit Roy', id:7}
   ]
+  // const projectPhase=[
+  //   {name:'Not Started', id:1},
+  //   {name:'Planned', id:2},
+  //   {name:'Eecution', id:3},
+  //   {name:'Deployed', id:4},
+  //   {name:'Discard', id:5}
+  // ]
   
 
   const handleClickOpen = () => {
@@ -135,6 +168,10 @@ export default function AddTask() {
 
   const selectChange = (event) => {
     setCurrency(event.target.value);
+   // setPhase(event.target.value);
+  };
+  const selectChange1 = (event) => {
+    setPhase(event.target.value);
   };
   const handleChange = (e)=>{
     console.log(e.target)
@@ -151,8 +188,28 @@ export default function AddTask() {
   const onSubmit = (e) =>{
     e.preventDefault()
     setFormErrors(validate(formValues))
-    setIsSubmit(true)
-    // console.log('value', values)
+    if(formValues.projectTitle == ''){
+      setIsSubmit(true)
+      setOpen(true);
+    }else if(formValues.comments == ''){
+      setIsSubmit(true)
+      setOpen(true);
+    }else if(formValues.submittedBy == ''){
+      setIsSubmit(true)
+      setOpen(true);
+    }else if( formValues.projectDescription.length < 20){
+      setIsSubmit(true)
+      setOpen(true);
+    }else if(formValues.projectDescription == ''){
+     // console.log(formValues.projectDescription.length)
+      setIsSubmit(true)
+      setOpen(true);
+    }else{
+    console.log('value',formValues)
+    setIsSubmit(false)
+    setOpen(false);
+    }
+    
   }
   useEffect(()=>{
     if((Object.keys(formErrors).length===0) && isSubmit){
@@ -172,10 +229,10 @@ export default function AddTask() {
     if(!values.comments){
       errors.comments= "Please mention any comments"
     }
-    if(!values.AutocompleteprojectDescription){
-      errors.projectDescription= "Description should by atleast 20 characters"
-    }
-    if(values.projectDescription> 20){
+    // if(!values.AutocompleteprojectDescription){
+    //   errors.projectDescription= "Description should by atleast 20 characters"
+    // }
+    if(values.projectDescription.length < 20 ){
       errors.projectDescription= "Description should by atleast 20 characters"
     }
     console.log('errors',errors)
@@ -255,11 +312,11 @@ export default function AddTask() {
           maxRows={4}
           size="small"
           name="comments"
-          // value={formValues.comments}
+           value={formValues.comments}
           onChange={handleChange}
           variant="standard"
         />
-        {/* {formErrors.comments? <div style={{color:'red'}}>{formErrors.comments}</div> : null} */}
+        {formErrors.comments? <div style={{color:'red', fontSize:'10px', marginLeft:'10px'}}>{formErrors.comments}</div> : null}
         </div>
         <div class="col-md-6">
         <TextField id="standard-basic" 
@@ -336,8 +393,28 @@ export default function AddTask() {
               {option.label}
             </MenuItem>
           ))}
+         
         </TextField>
         </div> 
+        <div class="col-md-12">
+        <TextField
+         // id="standard-select-projectPhase"
+          select
+          label="projectPhase"
+          value={phase}
+          onChange={selectChange1}
+          helperText="Please select projectPhase"
+          variant="standard"
+        >
+          {projectPhase.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+         
+        </TextField>
+        </div>
+        
         <div class="col-md-12">
         <Autocomplete
         multiple
@@ -354,6 +431,36 @@ export default function AddTask() {
           />
         )}
       />
+        </div>
+        {/* <div class="col-md-12">
+        <Autocomplete
+        multiple
+        id="tags-standard"
+        options={projectPhase}
+        getOptionLabel={(option) => option.name}
+        // defaultValue={}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="standard"
+            label="project Phase"
+            placeholder="project Phase"
+          />
+        )}
+      />
+        </div> */}
+        <div class="col-md-12" style={{marginLeft:'8px'}}>
+          <div>Start date</div>
+        <DatePicker
+        selected={startDate} 
+        onChange={(date) => setStartDate(date)} />
+        </div>
+        <p></p>
+        <div class="col-md-12" style={{marginLeft:'8px'}}>
+          <div>End date</div>
+        <DatePicker
+        selected={endDate} 
+        onChange={(date) => setEndDate(date)} />
         </div>
         </div>
         <div class="col-md-10">
