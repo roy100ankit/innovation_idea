@@ -68,40 +68,42 @@ export default function CardTemplate(props) {
     <Card sx={{ maxWidth: 345, height:"auto",padding:'3px' }}>
       <CardHeader
         avatar={
+          props.status!=='Not Started' ? 
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
+            {'A'}
           </Avatar>
+          : false
         }
         action={
-          <IconButton aria-label="settings">
-            {/* <MoreVertIcon /> */}
-            {/* <Button
-        id="basic-button"
-        aria-controls={open ? 'basic-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
-      >
-         <MoreVertIcon onClick={handleClick}/>
-      </Button> */}
-       <MoreVertIcon onClick={handleClick}/>
-            <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-      >
-        <MenuItem onClick={ ()=>{setOpen(true)
-        setStatus("Approve")}}>Approve</MenuItem>
-        <MenuItem onClick={ ()=>{setOpen(true)
-        setStatus("Reject")}}>Reject</MenuItem>
-        <MenuItem onClick={ ()=>{setOpen(true)
-        setStatus("Update")}}>Edit</MenuItem>
-      </Menu>
-          </IconButton>
+              <IconButton aria-label="settings">
+                {/* <MoreVertIcon /> */}
+                {/* <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+          >
+            <MoreVertIcon onClick={handleClick}/>
+          </Button> */}
+          <MoreVertIcon onClick={handleClick}/>
+                <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+          >
+            <MenuItem onClick={ ()=>{setOpen(true)
+            setStatus("Approve")}}>Approve</MenuItem>
+            <MenuItem onClick={ ()=>{setOpen(true)
+            setStatus("Reject")}}>Reject</MenuItem>
+            <MenuItem onClick={ ()=>{setOpen(true)
+            setStatus("Update")}}>Edit</MenuItem>
+          </Menu>
+              </IconButton>
            
         }
         title={props.item.projectTitle}
@@ -137,13 +139,33 @@ export default function CardTemplate(props) {
         image="/static/images/cards/paella.jpg"
         alt="Paella dish"
       /> */}
-      {/* <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
+      <CardContent>
+        <div style={{display:'flex',justifyContent:'space-between'}}>
+          <div>
+          <Typography gutterBottom variant="h8" component="div">
+          Started At
         </Typography>
-      </CardContent> */}
+          </div>
+        <div>
+          <Typography variant="body2" color="text.secondary">
+          {props.item.startDate}
+        </Typography>
+        </div>
+        </div>
+        <div style={{display:'flex',justifyContent:'space-between'}}>
+        <div>
+          <Typography gutterBottom variant="h8" component="div">
+          Complexity 
+        </Typography>
+          </div>
+        <div>
+          <Typography variant="body2" color="text.secondary">
+          {props.item.complexity}
+        </Typography>
+        </div>
+        </div>
+      </CardContent>
+      
       <CardActions disableSpacing>
         {/* <IconButton aria-label="add to favorites">
           <DateRangeIcon />
@@ -163,6 +185,7 @@ export default function CardTemplate(props) {
         
        
       </CardActions>
+      <CardActions>
       <Stack spacing={2} sx={{padding : "10px", display: "contents"}} direction="row">
         
         {/* <Chip label={props.item.address.city} />
@@ -172,10 +195,11 @@ export default function CardTemplate(props) {
           props.item && props.item.comments.length >0 ?
           props.item.teamMember.map(e=>{
             return(
-              <Chip label={e.id} variant="outlined"/>
+              <Chip label={e.teamMemberName} variant="outlined"/>
             )
           }):
           null
+          
         }
          {/* {
           props.item && props.item.tags.length >0 ?
@@ -195,34 +219,8 @@ export default function CardTemplate(props) {
          <Chip label={'sdfsdf'} variant="outlined"/>
          <Chip label={'sdgdfs'} /> */}
       </Stack>
+      </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        {/* <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
-            aside for 10 minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over
-            medium-high heat. Add chicken, shrimp and chorizo, and cook, stirring
-            occasionally until lightly browned, 6 to 8 minutes. Transfer shrimp to a
-            large plate and set aside, leaving chicken and chorizo in the pan. Add
-            pimentón, bay leaves, garlic, tomatoes, onion, salt and pepper, and cook,
-            stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and
-            peppers, and cook without stirring, until most of the liquid is absorbed,
-            15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and
-            mussels, tucking them down into the rice, and cook again without
-            stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don&apos;t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
-        </CardContent> */}
         <CardContent>
           <Typography paragraph>Project Description:</Typography>
           <Typography paragraph>

@@ -1,4 +1,4 @@
-import React ,{useEffect}from 'react'
+import React,{Component} from 'react'
 import VirtualList from './virtualList'
 import Box from '@mui/material/Box';
 import TaskList from './taskList'
@@ -19,20 +19,59 @@ import axios from 'axios'
 import { ConstructionOutlined } from '@mui/icons-material';
 import {useDispatch,useSelector} from 'react-redux'
 import { loadUsers } from '../redux/actions';
+import {connect} from 'react-redux'
 
 const drawerWidth = 240;
+class MainPage extends Component {
+  
 
-const MainPage = ()=>{
+    constructor(props){
+        super(props)
+        this.state={
+            task:this.props.projects
+        }
+    }
+    // task = useSelector(state=> state.data)
+    componentDidMount(){
+        //  axios.get('https://jsonplaceholder.typicode.com/users')
+        //   .then(res=> {
+        //     this.setState({task: res.data})
+        //   })
+        // axios.get(`${process.env.REACT_APP_URL}`)
+        // .then(res=> {
+        //   console.log('res Data',res.data)
+        //   this.setState({task: res.data})
+        //   console.log('task :', this.state.task.NotStarted)
+        // })
+        console.log('redux Props', this.props)
+        this.props.getProjects()
 
-    let dispatch = useDispatch()
-    const {projects} = useSelector(state=> state.data)
-
-    useEffect(()=>{
-        dispatch(loadUsers())
-        console.log('projects', projects)
-    },[])
-    return(
-        <React.Fragment>
+       // this.dispatch(loadUsers())
+        const reqData={
+          method: 'GET',
+          headers:{
+              'Content-Type' : 'application/json',  
+              mode:'no cors' 
+          }
+  
+        }
+  
+      //   fetch('http://localhost:8080/get-product-details',reqData) 
+      //   .then(response => response.json()) 
+      //   .then(data => {
+      //     console.log('data', data)
+      //     this.setState({task:data.projectRecords})
+      //   }) 
+      //   .catch(error => {
+      //     console.log(error);
+  
+      //  })        
+    }
+    
+    render(){
+      const {task} = this.state
+        return (
+          <React.Fragment>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
                 <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
@@ -64,7 +103,7 @@ const MainPage = ()=>{
           </List>
           <Divider />
           <List>
-            {['Reports', 'Configure Steps', 'Edit Form', 'Wiki', 'Archive'].map((text, index) => (
+            {['Reports', 'Configure Steps', 'Edit Form', 'Wiki'].map((text, index) => (
               <ListItem button key={text}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -94,17 +133,30 @@ const MainPage = ()=>{
             >
               <Toolbar />
               <div style={{display:"flex", justifyContent:"space-evenly"}}>
-              <TaskList header={'Not Started'} addButton={true} data= {projects}/>
-                <TaskList header={'Planning'} data={projects}/>
-                <TaskList header={'In Progress'} data={projects}/>
-                <TaskList header={'Completed'} data={projects}/>
+              <TaskList header={'Not Started'} addButton={true} data= {this.state.task}/>
+                <TaskList header={'Planning'} data={this.state.task}/>
+                <TaskList header={'In Progress'} data={this.state.task}/>
+                <TaskList header={'Completed'} data={this.state.task}/>
                 </div>
             </Box>
            
             </Box>
             
             </React.Fragment>
-    )
+        )
+    }
 }
 
-export default MainPage
+const mapStateToProps = state =>{
+  console.log('state',state)
+  return {
+    projects : state.data.projects
+  }
+}
+
+const mapDispatchToProps = dispatch =>{
+  return {
+    getProjects: ()=> dispatch(loadUsers())
+  }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(MainPage)

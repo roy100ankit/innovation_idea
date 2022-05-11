@@ -89,7 +89,7 @@ class taskList extends Component{
             <React.Fragment >
               
             <div>
-                <div style={{display:'flex', justifyContent:'space-around'}}>
+                <div style={{display:'flex', justifyContent:'space-around',color:'#56567a',fontWeight:'600'}}>
                 {this.props.header}
                 {/* {addButton ? <AddCircleIcon color="primary" baseClassName="fas" className="fa-plus-circle" onClick={this.addCard}/> : null} */}
                 {addButton ? <AddTask/> : null}
@@ -116,7 +116,7 @@ class taskList extends Component{
                       data.map(item=>{
                         if(item.status === header){
                           return (
-                            <Item><CardTemplate item={item}/></Item> 
+                            <Item><CardTemplate item={item} status={this.props.header}/></Item> 
                           )
                         }
                         
