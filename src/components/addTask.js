@@ -20,6 +20,11 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
 import DatePicker from "react-datepicker";  
 import "react-datepicker/dist/react-datepicker.css"; 
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker
+} from '@material-ui/pickers';
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -82,7 +87,8 @@ export default function AddTask() {
   const [open, setOpen] = React.useState(false);
   const [currency, setCurrency] = React.useState('3');
   const [phase, setPhase] = React.useState('Not Started');
-
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [value, setValue] = useState('');
   const initialValues={
     projectTitle:'',
     projectDescription:'',
@@ -122,28 +128,52 @@ export default function AddTask() {
         value: '5',
         label: '5',
     }
-  ];const projectPhase = [
-    {
-      value: 'Not Started',
-      label: 'Not Started',
-    },
-    {
-      value: 'Planned',
-      label: 'Planned',
-    },
-    {
-      value: 'Eecution',
-      label: 'Eecution',
-    },
-    {
-      value: 'Deployed',
-      label: 'Deployed',
-    },
-    {
-        value: 'Discard',
-        label: 'Discard',
-    }
   ];
+  
+  const projectPhase = [
+
+      {
+  
+        value: 'Not-Started',
+  
+        label: 'Not-Started',
+  
+      },
+  
+      {
+  
+        value: 'Planning',
+  
+        label: 'Planning',
+  
+      },
+  
+      {
+  
+        value: 'In-Progress',
+  
+        label: 'In-Progress',
+  
+      },
+  
+      {
+  
+        value: 'Completed',
+  
+        label: 'Completed',
+  
+      },
+  
+      {
+  
+          value: 'Blocked',
+  
+          label: 'Blocked',
+  
+      }
+  
+    ];
+  
   const teamMember=[
     {name:'Amol Sathewad', id:1},
     {name:'G Manikanta Sai', id:2},
@@ -160,7 +190,14 @@ export default function AddTask() {
   //   {name:'Deployed', id:4},
   //   {name:'Discard', id:5}
   // ]
-  
+  const handleDateChange = (date) => {
+    console.log(date);
+    setSelectedDate(date);
+  };
+  const handleDateChange1 = (date) => {
+    console.log(date);
+    setEndDate(date);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -176,6 +213,7 @@ export default function AddTask() {
   const handleChange = (e)=>{
     console.log(e.target)
     const {name,value} = e.target
+
    
     setFormValues({...formValues,[name]:value})
   }
@@ -194,7 +232,7 @@ export default function AddTask() {
     }else if(formValues.comments == ''){
       setIsSubmit(true)
       setOpen(true);
-    }else if(formValues.submittedBy == ''){
+    }else if(value == ''){
       setIsSubmit(true)
       setOpen(true);
     }else if( formValues.projectDescription.length < 20){
@@ -223,9 +261,9 @@ export default function AddTask() {
     if(!values.projectTitle){
       errors.projectTitle= "Project Title is required"
     }
-    if(!values.submittedBy){
+    if(!values.value){
       errors.submittedBy= "This field should not be empty"
-    }
+    }  
     if(!values.comments){
       errors.comments= "Please mention any comments"
     }
@@ -319,15 +357,26 @@ export default function AddTask() {
         {formErrors.comments? <div style={{color:'red', fontSize:'10px', marginLeft:'10px'}}>{formErrors.comments}</div> : null}
         </div>
         <div class="col-md-6">
+        {/* <input 
+                type='text'
+                value={value}
+                onChange={(e) => {
+                    const onlyLetters = e.target.value.replace(/[^a-zA-Z]/g, '');
+                    setValue(Array.from(new Set(onlyLetters.split(''))).join(''));
+                }}
+            /> */}
         <TextField id="standard-basic" 
         label="Submitted By" 
         variant="standard"
         name='submittedBy' 
         size="small"
-        value={formValues.submittedBy}
-        onChange={handleChange} 
+        value={value}
+        onChange={(e) => {
+          const onlyLetters = e.target.value.replace(/[^a-zA-Z]/g, '');
+          setValue(Array.from(new Set(onlyLetters.split(''))).join(''));
+      }}
         />
-        {formErrors.submittedBy? <div style={{color:'red',fontSize:'10px', marginLeft:'10px'}}>{formErrors.submittedBy}</div> : null}
+        {!value? <div style={{color:'red',fontSize:'10px', marginLeft:'10px'}}>{formErrors.submittedBy}</div> : null}
         </div>
 
         {/* <div class="col-md-6">
@@ -382,10 +431,10 @@ export default function AddTask() {
         <TextField
           id="standard-select-currency"
           select
-          label="Complexity"
+          label="Please select complexity"
           value={currency}
           onChange={selectChange}
-          helperText="Please select complexity"
+         // helperText="Please select complexity"
           variant="standard"
         >
           {currencies.map((option) => (
@@ -400,10 +449,10 @@ export default function AddTask() {
         <TextField
          // id="standard-select-projectPhase"
           select
-          label="projectPhase"
+          label="Please select projectPhase"
           value={phase}
           onChange={selectChange1}
-          helperText="Please select projectPhase"
+         // helperText="Please select projectPhase"
           variant="standard"
         >
           {projectPhase.map((option) => (
@@ -450,22 +499,45 @@ export default function AddTask() {
       />
         </div> */}
         <div class="col-md-12" style={{marginLeft:'8px'}}>
-          <div>Start date</div>
-        <DatePicker
+          {/* <div>Start date</div> */}
+          {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+
+        <KeyboardDatePicker
+          label="Start Date"
+          value={selectedDate}
+          onChange={handleDateChange}
+        />
+        
+      </MuiPickersUtilsProvider> */}
+ 
+        </div>
+        <div class="col-md-12" style={{marginLeft:'8px',borderBottomColor:'red'}}>
+          
+          {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+
+        <KeyboardDatePicker
+          label="End Date"
+          value={endDate}
+          onChange={handleDateChange1}
+        />
+        
+      </MuiPickersUtilsProvider> */}
+<div style={{borderColor:'white',borderWidth:5,color: '#989A9B'}}>Start date</div>
+        <DatePicker 
+        style={{borderColor:'white',borderWidth:5,width: '5%'}}
         selected={startDate} 
         onChange={(date) => setStartDate(date)} />
         </div>
-        <p></p>
         <div class="col-md-12" style={{marginLeft:'8px'}}>
-          <div>End date</div>
-        <DatePicker
+          <div style={{borderColor:'white',borderWidth:5,color: '#989A9B'}}>End date</div>
+        <DatePicker style={{TextDecoder:null}}
         selected={endDate} 
         onChange={(date) => setEndDate(date)} />
         </div>
         </div>
         <div class="col-md-10">
         <DialogActions>
-          <Button autoFocus variant='contained' onClick={onSubmit}>
+          <Button style={{backgroundColor:'#0d6efd'}} autoFocus variant='contained' onClick={onSubmit}>
             Submit
           </Button>
         </DialogActions>
