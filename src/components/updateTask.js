@@ -18,13 +18,8 @@ import { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
-import DatePicker from "react-datepicker";  
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import "react-datepicker/dist/react-datepicker.css"; 
-import axios from 'axios'
-import { addProject } from '../redux/actions';
-import {useDispatch,useSelector} from 'react-redux'
+import CardTemplate from './cardTemplate';
+
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -51,10 +46,6 @@ const Item = styled(Paper)(({ theme }) => ({
   backgroundColor:'#e2edf6'
   }));
  
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-  
 const BootstrapDialogTitle = (props) => {
   const { children, onClose, ...other } = props;
 
@@ -84,38 +75,95 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
+export default function AddTask(props) {
+
+ 
+  const [projectId, setProjectId] = React.useState(props.data.projectId);
+  const [projectTitle, setProjectTitle] = React.useState("");
+  const [projectDescription, setProjectDescription] = React.useState("");
+  const [status, setStatus] = React.useState("");  
+  const [complexity, setComplexity] = React.useState("");
+  const [usefulInfo, setUsefulInfo] = React.useState("");
+  const [submittedBy, setSubmittedBy] = React.useState("");
+  const [comments, setComments] = React.useState("");
+  //const [teamMember, setTeamMember] = React.useState("");
+  const [startDate, setStartDate] = React.useState("");
+  const [endDate, setEndDate] = React.useState("");
+
+  console.log("ProjectId",props.data.projectId);
+ 
+
+  React.useEffect(()=>{getProjectDetails()});
+  function getProjectDetails(){
+    const reqData1={
+      method: 'GET',
+      headers:{
+          'Content-Type' : 'application/json',
+          mode:'no cors'
+      }
+    }
+
+    fetch(`http://localhost:8080/get-product-details/${projectId}`,reqData1).then((result)=>{
+      result.json().then((resp)=>{
+        console.log("resp",resp);
+        setProjectId(resp.projectId);
+        setProjectTitle(resp.projectTitle);
+        setProjectDescription(resp.projectDescription);
+        setStatus(resp.status);
+        setComplexity(resp.complexity);
+        setUsefulInfo(resp.usefulInfo);
+        setSubmittedBy(resp.submittedBy);
+        setComments(resp.comments);
+        setStartDate(resp.startDate);
+        setEndDate(resp.endDate);
+      })
+    })
+
+    const reqData2={
+      method: 'PUT',
+      headers:{
+          'Content-Type' : 'application/json',
+          mode:'no cors',
+          body:JSON.stringify( {
+            "projectId":projectId,
+            "status":status,
+            "comments":comments
+      })
+      
+      }
+    }
+
+    fetch(`http://localhost:8080/get-product-details/${projectId}`,reqData2).then((result)=>{
+      result.json().then((resp)=>{
+        console.log("resp",resp);
+        
+      })
+    })
+  }
 
 
-export default function AddTask() {
   const [open, setOpen] = React.useState(false);
-  const [complexity, setComplexity] = React.useState('');
-  const [teamMember, setTeamMember] = React.useState([]);
-  const [inputValue, setInputValue] = React.useState('');
-  const [phase, setPhase] = React.useState('Not Started');
-  const [openSuccess, setOpenSuccess] = React.useState(false);
-  let dispatch = useDispatch();
+  const [currency, setCurrency] = React.useState('0');
+
   const initialValues={
     projectTitle:'',
     projectDescription:'',
-    status:'Not Started',
+    status:'Not started',
     complexity:'',
     usefulInfo:'',
     comments:'',
     submittedBy:'',
-    teamMember:''
-    // projectPhase:[]
+    teamMember:[]
 
   }
+
   const [formValues, setFormValues] = useState(initialValues)
   const  [formErrors, setFormErrors] = useState({})
   const [isSubmit, setIsSubmit] = useState(false)
   const  [fieldError, setFieldError] = useState(false)
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-
-  const {success} = useSelector(state=> state.data)
-   
-  const complexityLevel = [
+  const [editOpen, setEditOpen] = useState(false)
+  
+  const currencies = [
     {
       value: '1',
       label: '1',
@@ -136,54 +184,30 @@ export default function AddTask() {
         value: '5',
         label: '5',
     }
-  ];const projectPhase = [
-    {
-      value: 'Not Started',
-      label: 'Not Started',
-    },
-    {
-      value: 'Planned',
-      label: 'Planned',
-    },
-    {
-      value: 'In Progress',
-      label: 'In Progress',
-    },
-    {
-      value: 'Completed',
-      label: 'Completed',
-    },
-    {
-        value: 'Blocked',
-        label: 'Blocked',
-    }
   ];
-  const teamMemberList=[
-    {name:'Amol Sathewad', value:1},
-    {name:'G Manikanta Sai', value:2},
-    {name:'Aishwarya Muktewar', value:3},
-    {name:'Prashant Jha', value:4},
-    {name:'Sagar Bhosle', value:5},
-    {name:'Rafi Dudekula', value:6},
-    {name:'Ankit Roy', value:7}
+  const teamMember=[
+    {name:'Amol Sathewad', id:1},
+    {name:'G Manikanta Sai', id:2},
+    {name:'Aishwarya Muktewar', id:3},
+    {name:'Prashant Jha', id:4},
+    {name:'Sagar Bhosle', id:5},
+    {name:'Rafi Dudekula', id:6},
+    {name:'Ankit Roy', id:7}
   ]
+  
 
   const handleClickOpen = () => {
     setOpen(true);
+    setFormValues.projectTitle(CardTemplate.title);
   };
 
   const selectChange = (event) => {
-   // setCurrency(event.target.value);
-   // setPhase(event.target.value);
-  };
-  const selectChange1 = (event) => {
-    setPhase(event.target.value);
+    setCurrency(event.target.value);
   };
   const handleChange = (e)=>{
     console.log(e.target)
     const {name,value} = e.target
-    setComplexity(e.target.value)
-    // console.log('name,value', name,value)
+   
     setFormValues({...formValues,[name]:value})
   }
   const handleClose = () => {
@@ -192,55 +216,23 @@ export default function AddTask() {
     setIsSubmit(false)
     setOpen(false);
   };
-
-  const handleCloseSuccess = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
   const onSubmit = (e) =>{
     e.preventDefault()
     setFormErrors(validate(formValues))
-    if(formValues.projectTitle == ''){
-      setIsSubmit(true)
-      setOpen(true);
-    }else if(formValues.comments == ''){
-      setIsSubmit(true)
-      setOpen(true);
-    }else if(formValues.submittedBy == ''){
-      setIsSubmit(true)
-      setOpen(true);
-    }else if( formValues.projectDescription.length < 20){
-      setIsSubmit(true)
-      setOpen(true);
-    }else if(formValues.projectDescription == ''){
-     // console.log(formValues.projectDescription.length)
-      setIsSubmit(true)
-      setOpen(true);
-    }else{
-    console.log('value',formValues)
-    setIsSubmit(false)
-    setOpen(false);
-    }
-    console.log('formvalues', formValues)
-    if((Object.keys(formErrors).length===0) ){
-    dispatch(addProject(formValues))
-    // setFormValues(initialValues)
-    // setFormErrors({})
-    }
-    
+    setIsSubmit(true)
+    // console.log('value', values)
   }
   useEffect(()=>{
+
+    // setEditOpen(props.edit)
     if((Object.keys(formErrors).length===0) && isSubmit){
 
     }
-    setIsSubmit(false)
-  },[formErrors])
+    //setIsSubmit(false) 
+  })
   const validate = (values) =>{
     const errors ={}
-   
+    console.log('values', values.projectDescription.length)
     if(!values.projectTitle){
       errors.projectTitle= "Project Title is required"
     }
@@ -250,30 +242,28 @@ export default function AddTask() {
     if(!values.comments){
       errors.comments= "Please mention any comments"
     }
-    // if(!values.AutocompleteprojectDescription){
-    //   errors.projectDescription= "Description should by atleast 20 characters"
-    // }
-    if(values.projectDescription.length < 20 ){
+    if(!values.AutocompleteprojectDescription){
+      errors.projectDescription= "Description should by atleast 20 characters"
+    }
+    if(values.projectDescription> 20){
       errors.projectDescription= "Description should by atleast 20 characters"
     }
     console.log('errors',errors)
     return errors
     }
-
-    console.log('teamMember in final', teamMember)
-    console.log('initialValues in final', initialValues)
   return (
     <div>
-      <Button onClick={handleClickOpen} style={{padding:'0px'}}>
+      {/* <Button variant="outlined" onClick={handleClickOpen}>
       <AddCircleIcon color="primary" baseClassName="fas" className="fa-plus-circle"/>
-      </Button>
+      </Button> */}
       <BootstrapDialog
+      onClick={handleClickOpen}
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
-        open={open}
+        open={props.edit}
       >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Add Task
+          Update Task
         </BootstrapDialogTitle>
   
       <Box
@@ -295,13 +285,30 @@ export default function AddTask() {
         variant="standard" 
         name="projectTitle"
         size="small"
-        value={formValues.projectTitle}
+        value={projectTitle}
         onChange={handleChange}
   
         />
         {formErrors.projectTitle? <div style={{color:'red', fontSize:'10px', marginLeft:'10px'}}>{formErrors.projectTitle}</div> : null}
         </div>
-        
+        {/* <div class="col-md-6">
+        <TextField
+          id="standard-select-currency"
+          select
+          label="Complexity"
+          value={currency}
+          size="small"
+          onChange={selectChange}
+          helperText="Please select complexity"
+          variant="standard"
+        >
+          {currencies.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+        </div> */}
         <div class="col-md-12">
         {/* <TextField
           id="standard-multiline-flexible"
@@ -319,11 +326,11 @@ export default function AddTask() {
           maxRows={4}
           size="small"
           name="comments"
-           value={formValues.comments}
+          value={comments}
           onChange={handleChange}
           variant="standard"
         />
-        {formErrors.comments? <div style={{color:'red', fontSize:'10px', marginLeft:'10px'}}>{formErrors.comments}</div> : null}
+        {/* {formErrors.comments? <div style={{color:'red'}}>{formErrors.comments}</div> : null} */}
         </div>
         <div class="col-md-6">
         <TextField id="standard-basic" 
@@ -331,12 +338,29 @@ export default function AddTask() {
         variant="standard"
         name='submittedBy' 
         size="small"
-        value={formValues.submittedBy}
+        value={submittedBy}
         onChange={handleChange} 
         />
         {formErrors.submittedBy? <div style={{color:'red',fontSize:'10px', marginLeft:'10px'}}>{formErrors.submittedBy}</div> : null}
         </div>
 
+        {/* <div class="col-md-6">
+        <Autocomplete
+        multiple
+        id="tags-standard"
+        options={teamMember}
+        getOptionLabel={(option) => option.name}
+        // defaultValue={}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="standard"
+            label="Team Members"
+            placeholder="Team Members"
+          />
+        )}
+      />
+        </div> */}
         <div class="col-md-12">
         <TextField
           id="standard-multiline-flexible"
@@ -345,7 +369,7 @@ export default function AddTask() {
           maxRows={4}
           size="small"
           name="usefulInfo"
-          value={formValues.usefulInfo}
+          value={usefulInfo}
           onChange={handleChange}
           variant="standard"
         />
@@ -358,7 +382,7 @@ export default function AddTask() {
           rows={4}
           // error={fieldError}
           name="projectDescription"
-          value={formValues.projectDescription}
+          value={projectDescription}
           onChange={handleChange}
           // helperText="Incorrect entry."
           size="small"
@@ -373,59 +397,23 @@ export default function AddTask() {
           id="standard-select-currency"
           select
           label="Complexity"
-          name="complexity"
           value={complexity}
-          onChange={handleChange}
+          onChange={selectChange}
           helperText="Please select complexity"
           variant="standard"
         >
-          {complexityLevel.map((option) => (
+          {currencies.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
-         
         </TextField>
         </div> 
-        {/* <div class="col-md-12">
-        <TextField
-         // id="standard-select-projectPhase"
-          select
-          label="projectPhase"
-          value={phase}
-          onChange={selectChange1}
-          helperText="Please select projectPhase"
-          variant="standard"
-        >
-          {projectPhase.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-         
-        </TextField>
-        </div> */}
-        
         <div class="col-md-12">
         <Autocomplete
         multiple
         id="tags-standard"
-        name="teamMember"
-        label="teamMember"
-        options={teamMemberList}
-        value={teamMember}
-        onChange={(event, newValue) => {
-         // console.log('event, newValue',event, newValue)
-          setTeamMember(newValue);
-          console.log('teamMember', teamMember)
-          setFormValues({...formValues,teamMember:newValue})
-        }}
-        inputValue={inputValue}
-        onInputChange={(event, newInputValue) => {
-          // console.log('event, newInputValue',event, newInputValue)
-          setInputValue(newInputValue);
-        }}
-        // onInputChange={handleChange}
+        options={teamMember}
         getOptionLabel={(option) => option.name}
         // defaultValue={}
         renderInput={(params) => (
@@ -438,36 +426,6 @@ export default function AddTask() {
         )}
       />
         </div>
-        {/* <div class="col-md-12">
-        <Autocomplete
-        multiple
-        id="tags-standard"
-        options={projectPhase}
-        getOptionLabel={(option) => option.name}
-        // defaultValue={}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="standard"
-            label="project Phase"
-            placeholder="project Phase"
-          />
-        )}
-      />
-        </div> */}
-        <div class="col-md-12" style={{marginLeft:'8px'}}>
-          <div>Start date</div>
-        <DatePicker
-        selected={startDate} 
-        onChange={(date) => setStartDate(date)} />
-        </div>
-        <p></p>
-        <div class="col-md-12" style={{marginLeft:'8px'}}>
-          <div>End date</div>
-        <DatePicker
-        selected={endDate} 
-        onChange={(date) => setEndDate(date)} />
-        </div>
         </div>
         <div class="col-md-10">
         <DialogActions>
@@ -478,6 +436,7 @@ export default function AddTask() {
         </div>
           </form>
         </Box>
+        
        
         {/* </form> */}
        

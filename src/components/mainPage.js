@@ -1,7 +1,7 @@
 import React ,{useEffect}from 'react'
-import VirtualList from './virtualList'
 import Box from '@mui/material/Box';
 import TaskList from './taskList'
+import ToastMessage from './toastMessage';
 import Drawer from '@mui/material/Drawer';
 import AppBar from '@mui/material/AppBar';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,6 +14,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 import axios from 'axios'
 import { ConstructionOutlined } from '@mui/icons-material';
@@ -22,15 +24,26 @@ import { loadUsers } from '../redux/actions';
 
 const drawerWidth = 240;
 
+
 const MainPage = ()=>{
 
+    const [open, setOpen] = React.useState(false);
     let dispatch = useDispatch()
     const {projects} = useSelector(state=> state.data)
-
+    const {error} = useSelector(state=> state.data)
+    
+   useSelector(state => console.log('state21',state))
     useEffect(()=>{
         dispatch(loadUsers())
-        console.log('projects', projects)
+        
     },[])
+
+    const handleClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      } 
+      setOpen(false);
+    };
     return(
         <React.Fragment>
             <Box sx={{ display: 'flex' }}>
@@ -99,8 +112,8 @@ const MainPage = ()=>{
                 <TaskList header={'In Progress'} data={projects}/>
                 <TaskList header={'Completed'} data={projects}/>
                 </div>
+                
             </Box>
-           
             </Box>
             
             </React.Fragment>

@@ -1,10 +1,13 @@
-import {GET_PROJECTS} from './actionTypes'
+import {GET_PROJECTS, LOAD_SUCCESS} from './actionTypes'
 import {ADD_PROJECT} from './actionTypes'
 
 const initialState={
     projects:[],
     projectDetail:{},
     loading: true,
+    success:false,
+    error:false,
+    message:''
 }
 
 const projectReducers = (state=initialState, action)=>{
@@ -18,8 +21,22 @@ const projectReducers = (state=initialState, action)=>{
         case ADD_PROJECT:
             return {
                 ...state,
-                laoding:false
+                loading:false
             }
+        // case EDIT_PROJECT:
+        //     return {
+        //         ...state,
+        //         loading:false,
+        //         success:true
+        //     }   
+        case LOAD_SUCCESS:
+            return {
+                ...state,
+                loading:false,
+                error:false,
+                success:true,
+                message:action.payload
+            } 
         default:
             return state;    
     }

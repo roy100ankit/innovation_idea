@@ -1,10 +1,10 @@
-import {GET_PROJECTS} from './actionTypes'
+import {GET_PROJECTS, LOAD_SUCCESS} from './actionTypes'
 import {ADD_PROJECT} from './actionTypes'
 
 const getProjects = projects =>{
     return{
         type:GET_PROJECTS,
-        payload:projects
+        payload:projects,
     }
 }
 
@@ -14,6 +14,12 @@ const projectAdded = () =>{
     }
 }
 
+const loadSuccess = (message) => {
+    return {
+        type:LOAD_SUCCESS,
+        payload:message
+    }
+}
 export const loadUsers = ()=>{
     return function(dispatch){
         const reqData={
@@ -40,11 +46,10 @@ export const loadUsers = ()=>{
 }
 
 export const addProject = (data)=>{
-    console.log('clicked Add Project')
     return function(dispatch){
         const reqOpt = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify(data)
         };
         
@@ -56,7 +61,7 @@ export const addProject = (data)=>{
            dispatch(loadUsers())
           }) 
           .catch(error => {
-            console.log(error);
+            console.log('POST api error',error);
     
          })
     }

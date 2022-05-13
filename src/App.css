@@ -34,26 +34,7 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-.css-1qvr50w-MuiTypography-root {
-  margin: 0;
-  font-family: "Roboto","Helvetica","Arial",sans-serif;
-  font-weight: 400;
-  font-size: 0.875rem;
-  line-height: 1.43;
-  letter-spacing: 0em;
-  display: block;
-}
-.MuiTypography-root,.MuiTypography-h5,.MuiCardHeader-title ,.css-1qvr50w-MuiTypography-root{
-  margin: 0;
-  font-family: "Roboto","Helvetica","Arial",sans-serif;
-  font-weight: 400;
-  font-size: 0.875rem;
-  line-height: 1.43;
 
-  font-weight: small;
-  letter-spacing: 0em;
-  display: block;
-}
 .App-link {
   color: #61dafb;
 }

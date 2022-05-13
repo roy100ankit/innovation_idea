@@ -1,5 +1,6 @@
 
 import * as React from 'react';
+import { useEffect , useState} from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -23,6 +24,16 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { padding } from '@mui/system';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import UpdateTask from './updateTask'
+import { ApprovalRounded } from '@mui/icons-material';
+
+
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -36,6 +47,7 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function CardTemplate(props) {
+
   const [expanded, setExpanded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -45,9 +57,77 @@ export default function CardTemplate(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  const [open1, setOpen] = React.useState(false);
+  const [edit, setEdit] = React.useState(false);
+  const [disabled, setDisabled] = React.useState(true);
+  const [projectStatus, setProjectStatus] = React.useState(null);
+  const [status, setStatus] = useState(props.item.status);
+
+  //   useEffect(()=>{
+  //     console.log('use Effect', status)
+  // },[status])
+    const handleClose1 = () => {
+      setOpen(false);
+      console.log('Comment',comment);
+    };
+
+    const [comment, setComment] = React.useState('');
+    const handleComment = e => {
+     console.log(`Typed=>${e.target.value}`);
+     setComment(e.target.value);
+     console.log('comment',comment);
+    }
+
+    const projectId=props.item.projectId
+    const handleOnStatus = (e) => {
+      setOpen(false)
+      setAnchorEl(false)
+      //let statusPayload=''
+      if(projectStatus==="Approve" && status==="Not started"){
+       console.log("Current Status",status);
+       setStatus("Planning");
+       //statusPayload="Planning"
+       console.log("Updated Status",status);
+      }
+      else if(projectStatus==="Approve" && status==="Planning"){
+        console.log("Current Status",status);
+        setStatus('In-progress')
+        //statusPayload="In-progress"
+        console.log("Updated Status",status);
+      }
+      else if(projectStatus==="Approve" && status==="In-Progress"){
+        console.log("Current Status",status);
+        setStatus("Completed");
+        console.log("Updated Status",status);
+      }
+    
+      const requestOptions = {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                       "projectId":projectId,
+                       "status":status,
+                       "comments":comment
+                    })
+              };
+
+             // console.log('status in req', status)
+              fetch('http://localhost:8080/accept-reject-product-details', requestOptions)
+                  .then(response => {
+                    response.json()
+                   //window.location.reload()
+                   //console.log('response', response)
+                   } )
+                  
+    }
+  
 
   return (
     <Card sx={{ maxWidth: 345, height:"auto",padding:'3px' }}>
@@ -79,16 +159,47 @@ export default function CardTemplate(props) {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleClose}>Accept</MenuItem>
-        <MenuItem onClick={handleClose}>Reject</MenuItem>
-        <MenuItem onClick={handleClose}>Edit</MenuItem>
+        <MenuItem onClick={ ()=>{setOpen(true)
+        setProjectStatus("Approve")}}>Approve</MenuItem>
+        <MenuItem onClick={ ()=>{setOpen(true)
+        setProjectStatus("Reject")}}>Reject</MenuItem>
+        <MenuItem onClick={ ()=>{setEdit(true)
+        setProjectStatus("Edit")}}>Edit</MenuItem>
       </Menu>
           </IconButton>
-          
+           
         }
         title={props.item.projectTitle}
         subheader={props.item.projectId}
       />
+     <UpdateTask edit={edit} data={props.item}/>
+      <Dialog open={open1} onClose={handleClose1}>
+        <DialogTitle>Are you sure to {projectStatus} this project?</DialogTitle>
+        <DialogContent>
+        Project Id : {props.item.projectId}<br/>
+        Project Name : {props.item.projectTitle}<br/>
+        Status : {props.item.status}
+
+
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Comment"
+            type="text"
+            inputProps={{maxLength: 300  }}
+            fullWidth
+            variant="standard"
+            value={comment}
+            onChange={handleComment}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={()=>{setOpen(false)
+             setAnchorEl(false)}}>Cancel</Button>
+          <Button onClick={handleOnStatus}>{projectStatus}</Button>
+        </DialogActions>
+      </Dialog>
       {/* <CardMedia
         component="img"
         height="194"

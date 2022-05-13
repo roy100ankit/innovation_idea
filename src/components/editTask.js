@@ -24,6 +24,7 @@ import MuiAlert from '@mui/material/Alert';
 import "react-datepicker/dist/react-datepicker.css"; 
 import axios from 'axios'
 import { addProject } from '../redux/actions';
+import { loadUsers } from '../redux/actions';
 import {useDispatch,useSelector} from 'react-redux'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -86,7 +87,7 @@ BootstrapDialogTitle.propTypes = {
 
 
 
-export default function AddTask() {
+export default function EditTask(props) {
   const [open, setOpen] = React.useState(false);
   const [complexity, setComplexity] = React.useState('');
   const [teamMember, setTeamMember] = React.useState([]);
@@ -95,14 +96,15 @@ export default function AddTask() {
   const [openSuccess, setOpenSuccess] = React.useState(false);
   let dispatch = useDispatch();
   const initialValues={
-    projectTitle:'',
-    projectDescription:'',
-    status:'Not Started',
-    complexity:'',
-    usefulInfo:'',
-    comments:'',
-    submittedBy:'',
-    teamMember:''
+    projectId:props.data.projectId || '',
+    projectTitle:props.data.projectTitle|| '',
+    projectDescription:props.data.projectDescription|| '',
+    status:props.data.status || '',
+    complexity:props.data.complexity || '',
+    usefulInfo:props.data.usefulInfo || '',
+    comments:props.data.comments || '',
+    submittedBy:props.data.submittedBy || '',
+    teamMember:props.data.teamMember || ''
     // projectPhase:[]
 
   }
@@ -114,7 +116,14 @@ export default function AddTask() {
   const [endDate, setEndDate] = useState(new Date());
 
   const {success} = useSelector(state=> state.data)
+
+  useEffect(()=>{
+    setOpen(props.edit)
+  },[props.edit])
    
+  useEffect(()=>{
+    setOpen(open)
+  },[open])
   const complexityLevel = [
     {
       value: '1',
@@ -170,6 +179,7 @@ export default function AddTask() {
 
   const handleClickOpen = () => {
     setOpen(true);
+    // setFormValues.projectTitle(CardTemplate.title);
   };
 
   const selectChange = (event) => {
@@ -226,7 +236,23 @@ export default function AddTask() {
     }
     console.log('formvalues', formValues)
     if((Object.keys(formErrors).length===0) ){
-    dispatch(addProject(formValues))
+        const reqOpt = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify(formValues)
+        };
+        
+          fetch('http://localhost:8080/update-product-details',reqOpt) 
+          .then(response => response.json()) 
+          .then(res => {
+            console.log('Response in Load USers', res)
+           dispatch(loadUsers())
+          }) 
+          .catch(error => {
+            console.log('POST api error',error);
+    
+         })
+    // dispatch(addProject(formValues))
     // setFormValues(initialValues)
     // setFormErrors({})
     }
@@ -264,16 +290,17 @@ export default function AddTask() {
     console.log('initialValues in final', initialValues)
   return (
     <div>
-      <Button onClick={handleClickOpen} style={{padding:'0px'}}>
+      {/* <Button onClick={handleClickOpen} style={{padding:'0px'}}>
       <AddCircleIcon color="primary" baseClassName="fas" className="fa-plus-circle"/>
-      </Button>
+      </Button> */}
       <BootstrapDialog
+       onClick={handleClickOpen}
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
       >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Add Task
+          Edit Task
         </BootstrapDialogTitle>
   
       <Box
