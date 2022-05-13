@@ -109,6 +109,7 @@ export default function AddTask() {
   const [formValues, setFormValues] = useState(initialValues)
   const  [formErrors, setFormErrors] = useState({})
   const [isSubmit, setIsSubmit] = useState(false)
+  const [value, setValue] = useState('')
   const  [fieldError, setFieldError] = useState(false)
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
