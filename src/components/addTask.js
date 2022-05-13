@@ -209,7 +209,7 @@ export default function AddTask() {
     }else if(formValues.comments == ''){
       setIsSubmit(true)
       setOpen(true);
-    }else if(formValues.submittedBy == ''){
+    }else if(value == ''){
       setIsSubmit(true)
       setOpen(true);
     }else if( formValues.projectDescription.length < 20){
@@ -244,9 +244,9 @@ export default function AddTask() {
     if(!values.projectTitle){
       errors.projectTitle= "Project Title is required"
     }
-    if(!values.submittedBy){
+    if(!values.value){
       errors.submittedBy= "This field should not be empty"
-    }
+    }  
     if(!values.comments){
       errors.comments= "Please mention any comments"
     }
@@ -326,15 +326,26 @@ export default function AddTask() {
         {formErrors.comments? <div style={{color:'red', fontSize:'10px', marginLeft:'10px'}}>{formErrors.comments}</div> : null}
         </div>
         <div class="col-md-6">
+        {/* <input 
+                type='text'
+                value={value}
+                onChange={(e) => {
+                    const onlyLetters = e.target.value.replace(/[^a-zA-Z]/g, '');
+                    setValue(Array.from(new Set(onlyLetters.split(''))).join(''));
+                }}
+            /> */}
         <TextField id="standard-basic" 
         label="Submitted By" 
         variant="standard"
         name='submittedBy' 
         size="small"
-        value={formValues.submittedBy}
-        onChange={handleChange} 
+        value={value}
+        onChange={(e) => {
+          const onlyLetters = e.target.value.replace(/[^a-zA-Z]/g, '');
+          setValue(Array.from(new Set(onlyLetters.split(''))).join(''));
+      }}
         />
-        {formErrors.submittedBy? <div style={{color:'red',fontSize:'10px', marginLeft:'10px'}}>{formErrors.submittedBy}</div> : null}
+        {!value? <div style={{color:'red',fontSize:'10px', marginLeft:'10px'}}>{formErrors.submittedBy}</div> : null}
         </div>
 
         <div class="col-md-12">
@@ -391,10 +402,10 @@ export default function AddTask() {
         <TextField
          // id="standard-select-projectPhase"
           select
-          label="projectPhase"
+          label="Please select projectPhase"
           value={phase}
           onChange={selectChange1}
-          helperText="Please select projectPhase"
+         // helperText="Please select projectPhase"
           variant="standard"
         >
           {projectPhase.map((option) => (
@@ -456,22 +467,45 @@ export default function AddTask() {
       />
         </div> */}
         <div class="col-md-12" style={{marginLeft:'8px'}}>
-          <div>Start date</div>
-        <DatePicker
+          {/* <div>Start date</div> */}
+          {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+
+        <KeyboardDatePicker
+          label="Start Date"
+          value={selectedDate}
+          onChange={handleDateChange}
+        />
+        
+      </MuiPickersUtilsProvider> */}
+ 
+        </div>
+        <div class="col-md-12" style={{marginLeft:'8px',borderBottomColor:'red'}}>
+          
+          {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+
+        <KeyboardDatePicker
+          label="End Date"
+          value={endDate}
+          onChange={handleDateChange1}
+        />
+        
+      </MuiPickersUtilsProvider> */}
+<div style={{borderColor:'white',borderWidth:5,color: '#989A9B'}}>Start date</div>
+        <DatePicker 
+        style={{borderColor:'white',borderWidth:5,width: '5%'}}
         selected={startDate} 
         onChange={(date) => setStartDate(date)} />
         </div>
-        <p></p>
         <div class="col-md-12" style={{marginLeft:'8px'}}>
-          <div>End date</div>
-        <DatePicker
+          <div style={{borderColor:'white',borderWidth:5,color: '#989A9B'}}>End date</div>
+        <DatePicker style={{TextDecoder:null}}
         selected={endDate} 
         onChange={(date) => setEndDate(date)} />
         </div>
         </div>
         <div class="col-md-10">
         <DialogActions>
-          <Button autoFocus variant='contained' onClick={onSubmit}>
+          <Button style={{backgroundColor:'#0d6efd'}} autoFocus variant='contained' onClick={onSubmit}>
             Submit
           </Button>
         </DialogActions>
