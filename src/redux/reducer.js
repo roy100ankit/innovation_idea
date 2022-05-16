@@ -1,13 +1,14 @@
 import {GET_PROJECTS, LOAD_SUCCESS} from './actionTypes'
 import {ADD_PROJECT} from './actionTypes'
-
+import { EDIT_PAGE } from './actionTypes'
 const initialState={
     projects:[],
     projectDetail:{},
     loading: true,
     success:false,
     error:false,
-    message:''
+    message:'',
+    editPage:false
 }
 
 const projectReducers = (state=initialState, action)=>{
@@ -37,6 +38,13 @@ const projectReducers = (state=initialState, action)=>{
                 success:true,
                 message:action.payload
             } 
+        case EDIT_PAGE :{
+           return{
+               ...state,
+               editPage:action.editPage
+           }
+
+        }    
         default:
             return state;    
     }

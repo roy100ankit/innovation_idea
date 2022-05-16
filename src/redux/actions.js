@@ -1,6 +1,6 @@
 import {GET_PROJECTS, LOAD_SUCCESS} from './actionTypes'
 import {ADD_PROJECT} from './actionTypes'
-
+import { EDIT_PAGE } from './actionTypes'
 const getProjects = projects =>{
     return{
         type:GET_PROJECTS,
@@ -11,6 +11,13 @@ const getProjects = projects =>{
 const projectAdded = () =>{
     return{
         type:ADD_PROJECT
+    }
+}
+
+const editPageClick = (status) =>{
+    return{
+        type:EDIT_PAGE,
+        editPage:status
     }
 }
 
@@ -64,5 +71,11 @@ export const addProject = (data)=>{
             console.log('POST api error',error);
     
          })
+    }
+}
+
+export const editClick = (status)=>{
+    return function(dispatch){
+        dispatch(editPageClick(status))
     }
 }

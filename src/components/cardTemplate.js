@@ -35,6 +35,7 @@ import UpdateTask from './updateTask'
 import EditTask from './editTask'
 import {useDispatch,useSelector} from 'react-redux'
 import { loadUsers } from '../redux/actions';
+import {editClick}  from '../redux/actions'
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -178,8 +179,10 @@ export default function CardTemplate(props) {
             setStatus("Approve")}}>Approve</MenuItem>
             <MenuItem onClick={ ()=>{setOpen(true)
             setStatus("Reject")}}>Reject</MenuItem>
-            <MenuItem onClick={ ()=>{setEdit(true)
+            <MenuItem onClick={ ()=>{dispatch(editClick(true))
               setProjectStatus("Edit")}}>Edit</MenuItem>
+              <EditTask data={props.item}/>
+               {/* <EditTask edit={edit} data={props.item}/> */}
           </Menu>     
               </IconButton>
               </Item>
@@ -189,7 +192,7 @@ export default function CardTemplate(props) {
         </div>
       </CardContent>
       {/* <UpdateTask edit={edit} data={props.item}/> */}
-      <EditTask edit={edit} data={props.item}/>
+      {/* <EditTask data={props.item}/> */}
       <Dialog open={open1} onClose={handleClose1}>
         <DialogTitle>Are you sure to {status} this project?</DialogTitle>
         <DialogContent>

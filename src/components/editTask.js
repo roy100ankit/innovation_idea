@@ -24,7 +24,7 @@ import MuiAlert from '@mui/material/Alert';
 import "react-datepicker/dist/react-datepicker.css"; 
 import axios from 'axios'
 import { addProject } from '../redux/actions';
-import { loadUsers } from '../redux/actions';
+import { loadUsers, editClick } from '../redux/actions';
 import {useDispatch,useSelector} from 'react-redux'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -93,8 +93,11 @@ export default function EditTask(props) {
   const [teamMember, setTeamMember] = React.useState([]);
   const [inputValue, setInputValue] = React.useState('');
   const [phase, setPhase] = React.useState('Not Started');
+  const [projectStatus, setProjectStatus] = React.useState(null);
   const [openSuccess, setOpenSuccess] = React.useState(false);
   let dispatch = useDispatch();
+  const {editPage} = useSelector(state=> state.data)
+ console.log('editPage', editPage)
   const initialValues={
     projectId:props.data.projectId || '',
     projectTitle:props.data.projectTitle|| '',
@@ -117,13 +120,18 @@ export default function EditTask(props) {
 
   const {success} = useSelector(state=> state.data)
 
-  useEffect(()=>{
-    setOpen(props.edit)
-  },[props.edit])
+//   useEffect(()=>{
+//     if(props.edit===true && open===false){
+//         setOpen(props.edit)
+//       }
+//   },[props.edit])
    
-  useEffect(()=>{
-    setOpen(open)
-  },[open])
+//   useEffect((open)=>{
+//      if(open===true){
+//          setOpen(false)
+//      }
+//   },[open])
+
   const complexityLevel = [
     {
       value: '1',
@@ -197,17 +205,18 @@ export default function EditTask(props) {
     setFormValues({...formValues,[name]:value})
   }
   const handleClose = () => {
+    // setOpen(false)
+    dispatch(editClick(false))
     setFormValues(initialValues)
     setFormErrors({})
     setIsSubmit(false)
-    setOpen(false);
+    //setOpen(false);
   };
 
   const handleCloseSuccess = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-
     setOpen(false);
   };
   const onSubmit = (e) =>{
@@ -246,6 +255,7 @@ export default function EditTask(props) {
           .then(response => response.json()) 
           .then(res => {
             console.log('Response in Load USers', res)
+            dispatch(editClick(false))
            dispatch(loadUsers())
           }) 
           .catch(error => {
@@ -297,9 +307,12 @@ export default function EditTask(props) {
        onClick={handleClickOpen}
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
-        open={open}
+        open={editPage}
       >
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
+        <BootstrapDialogTitle id="customized-dialog-title" onClose={()=>{
+            setOpen(false)
+            handleClose()
+        }}>
           Edit Task
         </BootstrapDialogTitle>
   
