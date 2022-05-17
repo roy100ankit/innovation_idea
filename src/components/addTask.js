@@ -17,8 +17,12 @@ import {Formik,Field, Form} from 'formik';
 import { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Autocomplete from '@mui/material/Autocomplete';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Stack from '@mui/material/Stack';
-import DatePicker from "react-datepicker";  
+// import DatePicker from "react-datepicker";  
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import "react-datepicker/dist/react-datepicker.css"; 
@@ -102,7 +106,9 @@ export default function AddTask() {
     usefulInfo:'',
     comments:'',
     submittedBy:'',
-    teamMember:''
+    teamMember:'',
+    startDate:'',
+    endDate:''
     // projectPhase:[]
 
   }
@@ -170,6 +176,7 @@ export default function AddTask() {
   ]
 
   const handleClickOpen = () => {
+    setFormValues(initialValues)
     setOpen(true);
   };
 
@@ -450,6 +457,33 @@ export default function AddTask() {
         )}
       />
         </div>
+        <div class="col-md-12">
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <DatePicker
+        label="Start Date"
+        value={startDate}
+        onChange={(newValue) => {
+          console.log('newValue StartDate',newValue)
+          setStartDate(newValue);
+         // console.log('start Date', startDate)
+        }}
+        renderInput={(params) => <TextField {...params} />}
+      />
+      </LocalizationProvider>
+        </div>
+        <div class="col-md-12">
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <DatePicker
+        label="End Date"
+        value={endDate}
+        onChange={(newValue) => {
+          console.log('newValue EndDATE',newValue)
+          setEndDate(newValue);
+        }}
+        renderInput={(params) => <TextField {...params} />}
+      />
+      </LocalizationProvider>
+        </div>
         {/* <div class="col-md-12">
         <Autocomplete
         multiple
@@ -480,18 +514,8 @@ export default function AddTask() {
       </MuiPickersUtilsProvider> */}
  
         </div>
-        <div class="col-md-12" style={{marginLeft:'8px',borderBottomColor:'red'}}>
-          
-          {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
-
-        <KeyboardDatePicker
-          label="End Date"
-          value={endDate}
-          onChange={handleDateChange1}
-        />
-        
-      </MuiPickersUtilsProvider> */}
-<div style={{borderColor:'white',borderWidth:5,color: '#989A9B'}}>Start date</div>
+        {/* <div class="col-md-12" style={{marginLeft:'8px',borderBottomColor:'red'}}>
+          <div style={{borderColor:'white',borderWidth:5,color: '#989A9B'}}>Start date</div>
         <DatePicker 
         style={{borderColor:'white',borderWidth:5,width: '5%'}}
         selected={startDate} 
@@ -502,7 +526,7 @@ export default function AddTask() {
         <DatePicker style={{TextDecoder:null}}
         selected={endDate} 
         onChange={(date) => setEndDate(date)} />
-        </div>
+        </div> */}
         </div>
         <div class="col-md-10">
         <DialogActions>
