@@ -18,13 +18,18 @@ import { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Autocomplete from '@mui/material/Autocomplete';
 import Stack from '@mui/material/Stack';
-import DatePicker from "react-datepicker";  
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+// import DatePicker from "react-datepicker";  
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import './datePicker.css'
 import "react-datepicker/dist/react-datepicker.css"; 
-import axios from 'axios'
-import { addProject } from '../redux/actions';
-import {useDispatch,useSelector} from 'react-redux'
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker
+} from '@material-ui/pickers';
+
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -51,10 +56,6 @@ const Item = styled(Paper)(({ theme }) => ({
   backgroundColor:'#e2edf6'
   }));
  
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-  
 const BootstrapDialogTitle = (props) => {
   const { children, onClose, ...other } = props;
 
@@ -88,35 +89,31 @@ BootstrapDialogTitle.propTypes = {
 
 export default function AddTask() {
   const [open, setOpen] = React.useState(false);
-  const [complexity, setComplexity] = React.useState('');
-  const [teamMember, setTeamMember] = React.useState([]);
-  const [inputValue, setInputValue] = React.useState('');
+  const [currency, setCurrency] = React.useState('3');
   const [phase, setPhase] = React.useState('Not Started');
-  const [openSuccess, setOpenSuccess] = React.useState(false);
-  let dispatch = useDispatch();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [value, setValue] = useState(null);
+  const [value1, setValue1] = useState(null);
+  const [value2, setValue2] = useState(null);
   const initialValues={
     projectTitle:'',
     projectDescription:'',
-    status:'Not Started',
+    status:'Not started',
     complexity:'',
     usefulInfo:'',
     comments:'',
     submittedBy:'',
-    teamMember:''
+    teamMember:[],
     // projectPhase:[]
 
   }
   const [formValues, setFormValues] = useState(initialValues)
   const  [formErrors, setFormErrors] = useState({})
   const [isSubmit, setIsSubmit] = useState(false)
-  const [value, setValue] = useState('')
   const  [fieldError, setFieldError] = useState(false)
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-
-  const {success} = useSelector(state=> state.data)
-   
-  const complexityLevel = [
+  const currencies = [
     {
       value: '1',
       label: '1',
@@ -137,44 +134,83 @@ export default function AddTask() {
         value: '5',
         label: '5',
     }
-  ];const projectPhase = [
-    {
-      value: 'Not Started',
-      label: 'Not Started',
-    },
-    {
-      value: 'Planned',
-      label: 'Planned',
-    },
-    {
-      value: 'In Progress',
-      label: 'In Progress',
-    },
-    {
-      value: 'Completed',
-      label: 'Completed',
-    },
-    {
-        value: 'Blocked',
-        label: 'Blocked',
-    }
   ];
-  const teamMemberList=[
-    {name:'Amol Sathewad', value:1},
-    {name:'G Manikanta Sai', value:2},
-    {name:'Aishwarya Muktewar', value:3},
-    {name:'Prashant Jha', value:4},
-    {name:'Sagar Bhosle', value:5},
-    {name:'Rafi Dudekula', value:6},
-    {name:'Ankit Roy', value:7}
+  
+  const projectPhase = [
+
+      {
+  
+        value: 'Not-Started',
+  
+        label: 'Not-Started',
+  
+      },
+  
+      {
+  
+        value: 'Planning',
+  
+        label: 'Planning',
+  
+      },
+  
+      {
+  
+        value: 'In-Progress',
+  
+        label: 'In-Progress',
+  
+      },
+  
+      {
+  
+        value: 'Completed',
+  
+        label: 'Completed',
+  
+      },
+  
+      {
+  
+          value: 'Blocked',
+  
+          label: 'Blocked',
+  
+      }
+  
+    ];
+  
+  const teamMember=[
+    {name:'Amol Sathewad', id:1},
+    {name:'G Manikanta Sai', id:2},
+    {name:'Aishwarya Muktewar', id:3},
+    {name:'Prashant Jha', id:4},
+    {name:'Sagar Bhosle', id:5},
+    {name:'Rafi Dudekula', id:6},
+    {name:'Ankit Roy', id:7}
   ]
+  // const projectPhase=[
+  //   {name:'Not Started', id:1},
+  //   {name:'Planned', id:2},
+  //   {name:'Eecution', id:3},
+  //   {name:'Deployed', id:4},
+  //   {name:'Discard', id:5}
+  // ]
+  const handleDateChange = (date) => {
+    console.log(date);
+    setSelectedDate(date);
+  };
+  const handleDateChange1 = (date) => {
+    console.log(date);
+    setEndDate(date);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const selectChange = (event) => {
-   // setCurrency(event.target.value);
+    setCurrency(event.target.value);
    // setPhase(event.target.value);
   };
   const selectChange1 = (event) => {
@@ -183,22 +219,14 @@ export default function AddTask() {
   const handleChange = (e)=>{
     console.log(e.target)
     const {name,value} = e.target
-    setComplexity(e.target.value)
-    // console.log('name,value', name,value)
+
+   
     setFormValues({...formValues,[name]:value})
   }
   const handleClose = () => {
     setFormValues(initialValues)
     setFormErrors({})
     setIsSubmit(false)
-    setOpen(false);
-  };
-
-  const handleCloseSuccess = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
     setOpen(false);
   };
   const onSubmit = (e) =>{
@@ -225,12 +253,6 @@ export default function AddTask() {
     setIsSubmit(false)
     setOpen(false);
     }
-    console.log('formvalues', formValues)
-    if((Object.keys(formErrors).length===0) ){
-    dispatch(addProject(formValues))
-    // setFormValues(initialValues)
-    // setFormErrors({})
-    }
     
   }
   useEffect(()=>{
@@ -241,7 +263,7 @@ export default function AddTask() {
   },[formErrors])
   const validate = (values) =>{
     const errors ={}
-   
+    console.log('values', values.projectDescription.length)
     if(!values.projectTitle){
       errors.projectTitle= "Project Title is required"
     }
@@ -260,12 +282,9 @@ export default function AddTask() {
     console.log('errors',errors)
     return errors
     }
-
-    console.log('teamMember in final', teamMember)
-    console.log('initialValues in final', initialValues)
   return (
     <div>
-      <Button onClick={handleClickOpen} style={{padding:'0px'}}>
+      <Button variant="outlined" onClick={handleClickOpen}>
       <AddCircleIcon color="primary" baseClassName="fas" className="fa-plus-circle"/>
       </Button>
       <BootstrapDialog
@@ -302,7 +321,24 @@ export default function AddTask() {
         />
         {formErrors.projectTitle? <div style={{color:'red', fontSize:'10px', marginLeft:'10px'}}>{formErrors.projectTitle}</div> : null}
         </div>
-        
+        {/* <div class="col-md-6">
+        <TextField
+          id="standard-select-currency"
+          select
+          label="Complexity"
+          value={currency}
+          size="small"
+          onChange={selectChange}
+          helperText="Please select complexity"
+          variant="standard"
+        >
+          {currencies.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+        </div> */}
         <div class="col-md-12">
         {/* <TextField
           id="standard-multiline-flexible"
@@ -349,6 +385,23 @@ export default function AddTask() {
         {!value? <div style={{color:'red',fontSize:'10px', marginLeft:'10px'}}>{formErrors.submittedBy}</div> : null}
         </div>
 
+        {/* <div class="col-md-6">
+        <Autocomplete
+        multiple
+        id="tags-standard"
+        options={teamMember}
+        getOptionLabel={(option) => option.name}
+        // defaultValue={}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="standard"
+            label="Team Members"
+            placeholder="Team Members"
+          />
+        )}
+      />
+        </div> */}
         <div class="col-md-12">
         <TextField
           id="standard-multiline-flexible"
@@ -379,19 +432,18 @@ export default function AddTask() {
         {formErrors.projectDescription? <div style={{color:'red', fontSize:'10px', marginLeft:'10px'}}>{formErrors.projectDescription}</div> : null}
         </div>
         </div> 
-        <div class="col-md-6">
+        <div class="col-md-6" id='main'>
         <div class="col-md-12">
         <TextField
           id="standard-select-currency"
           select
-          label="Complexity"
-          name="complexity"
-          value={complexity}
-          onChange={handleChange}
-          helperText="Please select complexity"
+          label="Please select complexity"
+          value={currency}
+          onChange={selectChange}
+         // helperText="Please select complexity"
           variant="standard"
         >
-          {complexityLevel.map((option) => (
+          {currencies.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
@@ -399,7 +451,7 @@ export default function AddTask() {
          
         </TextField>
         </div> 
-        {/* <div class="col-md-12">
+        <div class="col-md-12">
         <TextField
          // id="standard-select-projectPhase"
           select
@@ -416,28 +468,13 @@ export default function AddTask() {
           ))}
          
         </TextField>
-        </div> */}
+        </div>
         
         <div class="col-md-12">
         <Autocomplete
         multiple
         id="tags-standard"
-        name="teamMember"
-        label="teamMember"
-        options={teamMemberList}
-        value={teamMember}
-        onChange={(event, newValue) => {
-         // console.log('event, newValue',event, newValue)
-          setTeamMember(newValue);
-          console.log('teamMember', teamMember)
-          setFormValues({...formValues,teamMember:newValue})
-        }}
-        inputValue={inputValue}
-        onInputChange={(event, newInputValue) => {
-          // console.log('event, newInputValue',event, newInputValue)
-          setInputValue(newInputValue);
-        }}
-        // onInputChange={handleChange}
+        options={teamMember}
         getOptionLabel={(option) => option.name}
         // defaultValue={}
         renderInput={(params) => (
@@ -449,6 +486,28 @@ export default function AddTask() {
           />
         )}
       />
+        </div>
+        <div>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <DatePicker
+        label="Start Date"
+        value={value1}
+        onChange={(newValue) => {
+          setValue1(newValue);
+        }}
+        renderInput={(params) => <TextField {...params} />}
+      />
+    </LocalizationProvider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <DatePicker
+        label="End Date"
+        value={value2}
+        onChange={(newValue) => {
+          setValue2(newValue);
+        }}
+        renderInput={(params) => <TextField {...params} />}
+      />
+    </LocalizationProvider>
         </div>
         {/* <div class="col-md-12">
         <Autocomplete
@@ -491,18 +550,19 @@ export default function AddTask() {
         />
         
       </MuiPickersUtilsProvider> */}
-<div style={{borderColor:'white',borderWidth:5,color: '#989A9B'}}>Start date</div>
+{/* <div style={{borderColor:'white',borderWidth:5,color: '#989A9B'}}>Start date</div>
         <DatePicker 
         style={{borderColor:'white',borderWidth:5,width: '5%'}}
         selected={startDate} 
-        onChange={(date) => setStartDate(date)} />
+        onChange={(date) => setStartDate(date)} /> */}
         </div>
-        <div class="col-md-12" style={{marginLeft:'8px'}}>
+        {/* <div class="col-md-12" style={{marginLeft:'8px'}}>
           <div style={{borderColor:'white',borderWidth:5,color: '#989A9B'}}>End date</div>
         <DatePicker style={{TextDecoder:null}}
         selected={endDate} 
+        placeholder='date'
         onChange={(date) => setEndDate(date)} />
-        </div>
+        </div> */}
         </div>
         <div class="col-md-10">
         <DialogActions>
@@ -513,6 +573,7 @@ export default function AddTask() {
         </div>
           </form>
         </Box>
+        
        
         {/* </form> */}
        
