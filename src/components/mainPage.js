@@ -28,6 +28,7 @@ const drawerWidth = 240;
 const MainPage = ()=>{
 
     const [open, setOpen] = React.useState(false);
+    const [noData, setNoData] = React.useState(false);
     let dispatch = useDispatch()
     const {projects} = useSelector(state=> state.data)
     const {error} = useSelector(state=> state.data)
@@ -35,7 +36,10 @@ const MainPage = ()=>{
    useSelector(state => console.log('state21',state))
     useEffect(()=>{
         dispatch(loadUsers())
-        
+        const noData1 = projects.some(item=>item.status!=='Planning')
+        console.log('noData1', noData1)
+        setNoData(noData1)
+      
     },[])
 
     const handleClose = (event, reason) => {
@@ -44,6 +48,16 @@ const MainPage = ()=>{
       } 
       setOpen(false);
     };
+    const noDataStatus = (status)=>{
+    const  noData1= projects.filter(item => item.status === status)
+    console.log('noData1 efer', noData1)
+   return noData1.length===0 ? true : false
+    }
+  //  const noData= projects.some((item)=>{
+  //    return item.status!===
+  //  })
+
+    // console.log('noData1', noData1)
     return(
         <React.Fragment>
             <Box sx={{ display: 'flex' }}>
@@ -105,12 +119,13 @@ const MainPage = ()=>{
             <Box
             component="main" sx={{ flexGrow: 1, p: 3 }}
             >
+              {/* {noData={projects.some(item=>item.status!=='Planning')}} */}
               <Toolbar />
-              <div style={{display:"flex", justifyContent:"space-evenly"}}>
-              <TaskList header={'Not Started'} addButton={true} data= {projects}/>
-                <TaskList header={'Planning'} data={projects}/>
-                <TaskList header={'In Progress'} data={projects}/>
-                <TaskList header={'Completed'} data={projects}/>
+              <div style={{display:"flex", justifyContent:"space-evenly", position:'fixed'}}>
+              <TaskList header={'Not Started'}  noData={noDataStatus('Not Started')} addButton={true} data= {projects}/>
+                <TaskList header={'Planning'} noData={noDataStatus('Planning')} data={projects}/>
+                <TaskList header={'In Progress'}  noData={noDataStatus('In Progress')} data={projects}/>
+                <TaskList header={'Completed'} noData={noDataStatus('Completed')} data={projects}/>
                 </div>
                 
             </Box>

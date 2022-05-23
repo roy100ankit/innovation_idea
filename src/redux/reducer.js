@@ -1,6 +1,7 @@
 import {GET_PROJECTS, LOAD_SUCCESS} from './actionTypes'
 import {ADD_PROJECT} from './actionTypes'
 import { EDIT_PAGE } from './actionTypes'
+import { NO_DATA } from './actionTypes'
 const initialState={
     projects:[],
     projectDetail:{},
@@ -8,7 +9,8 @@ const initialState={
     success:false,
     error:false,
     message:'',
-    editPage:false
+    editPage:false,
+    noData:false
 }
 
 const projectReducers = (state=initialState, action)=>{
@@ -44,7 +46,14 @@ const projectReducers = (state=initialState, action)=>{
                editPage:action.editPage
            }
 
-        }    
+        }
+        case NO_DATA :{
+            return{
+                ...state,
+                noData:action.noData
+            }
+ 
+         }     
         default:
             return state;    
     }

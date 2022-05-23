@@ -111,7 +111,9 @@ export default function CardTemplate(props) {
           "comments": comments
         })
     };
-    setOpen(false);
+    
+    if(comments.length>0){
+      setOpen(false);
       fetch('http://localhost:8080/accept-reject-product-details',reqOpt) 
       .then(response => response.json()) 
       .then(res => {
@@ -122,14 +124,14 @@ export default function CardTemplate(props) {
         console.log(error);
 
      })
-
+    }
     }
 
   return (
     <Card sx={{ maxWidth: 345, height:"auto",padding:'3px' }}>
-      <CardContent>
-      <div class="row g-3">
-        <div class="col-md-9">
+      <CardContent sx={{padding:'11px' }}>
+      <div class="row g-3" style={{maxWidth:'inherit'}}>
+        <div class="col-md-10" style={{textAlign:'initial'}}>
         <Typography variant="h6" component="div" color="#2e4f90">
         {props.item.projectTitle}
       </Typography>
@@ -137,8 +139,8 @@ export default function CardTemplate(props) {
         <Typography sx={{ color: 'text.secondary', display: 'inline', fontSize: 12  }} color="text.secondary">
           {props.item.projectId}
       </Typography>
-        </div>
-        <div class="col-md-3">
+        </div>;
+        <div class="col-md-1" style={{display:'flex', justifyContent:'space-between',marginLeft:'-4px'}}>
           {/* <div class="row">
         <IconButton aria-label="settings">
           <MoreVertIcon onClick={handleClick}/>
@@ -186,10 +188,20 @@ export default function CardTemplate(props) {
           </Menu>     
               </IconButton>
               </Item>
-               <Item> {props.status !== 'Not Started' ?<Avatar sx={{ bgcolor:  red[500] ,width: 24, height: 24}}>A</Avatar>: null}</Item>
+               {/* <Item> {props.status !== 'Not Started' ?<Avatar sx={{ bgcolor:  red[500] ,width: 24, height: 24}}>A</Avatar>: null}</Item> */}
              </Stack>
         </div>
         </div>
+        <div class="row g-3" style={{maxWidth:'inherit'}}>
+      <div class="col-md-12">
+      {/* <Item> {props.status !== 'Not Started' ?<Avatar sx={{ bgcolor:  red[500] ,width: 24, height: 24}}>A</Avatar>: null}</Item> */}
+      <Item> {props.status !== 'Not Started' ?<Chip size="small" label="Active" color="success" />: null}</Item>
+      </div>
+       
+        </div>
+        {/* <CardActions>
+      {props.status !== 'Not Started' ? <Chip label="success" color="success" />: null}
+        </CardActions> */}
       </CardContent>
       {/* <UpdateTask edit={edit} data={props.item}/> */}
       {/* <EditTask data={props.item}/> */}
@@ -226,32 +238,6 @@ export default function CardTemplate(props) {
         image="/static/images/cards/paella.jpg"
         alt="Paella dish"
       /> */}
-      <CardContent>
-        <div style={{display:'flex',justifyContent:'space-between'}}>
-          <div>
-          <Typography gutterBottom variant="h8" component="div">
-          Started At
-        </Typography>
-          </div>
-        <div>
-          <Typography variant="body2" color="text.secondary">
-          {props.item.startDate}
-        </Typography>
-        </div>
-        </div>
-        <div style={{display:'flex',justifyContent:'space-between'}}>
-        <div>
-          <Typography gutterBottom variant="h8" component="div">
-          Complexity 
-        </Typography>
-          </div>
-        <div>
-          <Typography variant="body2" color="text.secondary">
-          {props.item.complexity}
-        </Typography>
-        </div>
-        </div>
-      </CardContent>
       
       <CardActions disableSpacing>
         {/* <IconButton aria-label="add to favorites">
@@ -288,12 +274,57 @@ export default function CardTemplate(props) {
         
        
       </CardActions>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent>
+          <div>
+        <Typography paragraph>Project Description:</Typography>
+        <div style={{display:'flex',justifyContent:'space-between'}}>
+         <Typography variant="body2" color="text.secondary" sx={{overflowWrap:'anywhere',marginBottom:'revert'}}>
+            {props.item.projectDescription}
+          </Typography>
+        </div>       
+        {/* </CardContent>
+        <CardContent> */}
+        <div style={{display:'flex',justifyContent:'space-between'}}>
+        <div>
+          <Typography gutterBottom variant="h8" component="div">
+          Project ID 
+        </Typography>
+          </div>
+        <div>
+          <Typography variant="body2" color="text.secondary">
+          {props.item.projectId}
+        </Typography>
+        </div>
+        </div>
+        <div style={{display:'flex',justifyContent:'space-between'}}>
+          <div>
+          <Typography gutterBottom variant="h8" component="div">
+          Started At
+        </Typography>
+          </div>
+        <div>
+          <Typography variant="body2" color="text.secondary">
+          {props.item.startDate}
+        </Typography>
+        </div>
+        </div>
+        <div style={{display:'flex',justifyContent:'space-between'}}>
+        <div>
+          <Typography gutterBottom variant="h8" component="div">
+          Complexity 
+        </Typography>
+          </div>
+        <div>
+          <Typography variant="body2" color="text.secondary">
+          {props.item.complexity}
+        </Typography>
+        </div>
+        </div>
+        </div>
+      </CardContent>
       <CardActions>
       <Stack spacing={2} sx={{padding : "10px", display: "contents"}} direction="row">
-        
-        {/* <Chip label={props.item.address.city} />
-        <Chip label={props.item.address.street} variant="outlined"/>
-        <Chip label={props.item.address.city} /> */}
         {
           props.item && props.item.comments.length >0 ?
           props.item.teamMember.map(e=>{
@@ -323,13 +354,6 @@ export default function CardTemplate(props) {
          <Chip label={'sdgdfs'} /> */}
       </Stack>
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Project Description:</Typography>
-          <Typography paragraph>
-            {props.item.projectDescription}
-          </Typography>          
-        </CardContent>
       </Collapse>
     </Card>
   );

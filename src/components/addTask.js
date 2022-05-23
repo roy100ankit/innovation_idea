@@ -281,7 +281,7 @@ export default function AddTask() {
         open={open}
       >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Add Task
+          Add New Project
         </BootstrapDialogTitle>
   
       <Box
@@ -528,7 +528,7 @@ export default function AddTask() {
         onChange={(date) => setEndDate(date)} />
         </div> */}
         </div>
-        <div class="col-md-10">
+        <div class="col-md-12">
         <DialogActions>
           <Button style={{backgroundColor:'#0d6efd'}} autoFocus variant='contained' onClick={onSubmit}>
             Submit

@@ -313,7 +313,7 @@ export default function EditTask(props) {
             setOpen(false)
             handleClose()
         }}>
-          Edit Task
+          Edit Project
         </BootstrapDialogTitle>
   
       <Box
@@ -509,7 +509,7 @@ export default function EditTask(props) {
         onChange={(date) => setEndDate(date)} />
         </div>
         </div>
-        <div class="col-md-10">
+        <div class="col-md-12">
         <DialogActions>
           <Button autoFocus variant='contained' onClick={onSubmit}>
             Submit

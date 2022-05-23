@@ -84,9 +84,9 @@ class taskList extends Component{
   }
    
     render(){
-      const { addButton, data, header} = this.props
+      const { addButton, data, header,noData} = this.props
 
-     
+      console.log('this.props DTAA', this.props)
         return (
             <React.Fragment >
               
@@ -121,11 +121,18 @@ class taskList extends Component{
                             <Item><CardTemplate item={item} status={this.props.header}/></Item> 
                           )
                         }
-                        
                       })
-                     
+                        
                       : null
-                    }          
+                    } 
+                    {
+                     noData===true ?
+
+                        <Item sx={{marginTop:'13rem', width:'initial'}}>No Projects Available</Item> 
+                        
+                        : null
+                    
+                    }
                   </Stack>
             }
             </Box>

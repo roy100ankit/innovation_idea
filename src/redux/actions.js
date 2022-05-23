@@ -1,6 +1,8 @@
 import {GET_PROJECTS, LOAD_SUCCESS} from './actionTypes'
 import {ADD_PROJECT} from './actionTypes'
 import { EDIT_PAGE } from './actionTypes'
+import { NO_DATA } from './actionTypes'
+
 const getProjects = projects =>{
     return{
         type:GET_PROJECTS,
@@ -14,13 +16,12 @@ const projectAdded = () =>{
     }
 }
 
-const editPageClick = (status) =>{
+const noDataStatus = (status) =>{
     return{
         type:EDIT_PAGE,
-        editPage:status
+        noData:status
     }
 }
-
 const loadSuccess = (message) => {
     return {
         type:LOAD_SUCCESS,
@@ -77,5 +78,12 @@ export const addProject = (data)=>{
 export const editClick = (status)=>{
     return function(dispatch){
         dispatch(editPageClick(status))
+    }
+}
+
+export const editPageClick = (status) =>{
+    return{
+        type:EDIT_PAGE,
+        editPage:status
     }
 }

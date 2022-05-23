@@ -18,12 +18,14 @@
 }
 
 ::-webkit-scrollbar-track{
-  background-color: #ffffff;
+  background-color: #e6e8e8;
+  border-radius: 1px;
 }
 ::-webkit-scrollbar-thumb{
   background-image: linear-gradient(#c3cbda,rgb(116, 208, 241));
   border-radius: 2px;
 }
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
