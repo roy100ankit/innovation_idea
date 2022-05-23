@@ -36,6 +36,16 @@ import EditTask from './editTask'
 import {useDispatch,useSelector} from 'react-redux'
 import { loadUsers } from '../redux/actions';
 import {editClick}  from '../redux/actions'
+import { Box } from '@mui/material';
+import { useEffect } from "react";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import PropTypes from 'prop-types';
+import CloseIcon from '@mui/icons-material/Close';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -54,17 +64,143 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+const initialValues={
+  projectTitle:'',
+  projectDescription:'',
+  status:'Not Started',
+  complexity:'',
+  usefulInfo:'',
+  comments:'',
+  submittedBy:'',
+  teamMember:'',
+  startDate:'',
+  endDate:''
+  // projectPhase:[]
+  
+  }
+  
+  const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+  }));
+  
+  const BootstrapDialogTitle = (props) => {
+  const { children, onClose, ...other } = props;
+  
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+  };
+  
+  BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+  };
+
 export default function CardTemplate(props) {
   let dispatch = useDispatch()
   const [expanded, setExpanded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [popOver, setPopOver] = React.useState(null);
   const [comments, setComments] = React.useState('')
+  const [addComment, setAddComment] = React.useState('')
+  const [openComment, setOpenComment] = React.useState(false);
+  const [commentArray, setCommentArray] = React.useState([]);
+  const [maxWidth, setMaxWidth] = React.useState('sm');
+  const [fullWidth, setFullWidth] = React.useState(true);
+
+  useEffect( () => {
+    console.log("commentArray",commentArray)
+  },
+  [commentArray] 
+  ) 
+
+  const handleComment =(e) =>{
+    console.log(e.target)
+    setAddComment(e.target.value)
+  }
+
+  const commentAdd =() => {
+    const reqData2={
+      method: 'PUT',
+      headers:{
+          'Content-Type' : 'application/json',
+          mode:'no cors'},
+          body:JSON.stringify(
+            {
+              projectId: props.item.projectId,
+              projectTitle:props.item.projectTitle,
+              projectDescription:props.item.projectDescription,
+              status:props.item.status,
+              complexity:props.item.complexity,
+              usefulInfo:props.item.usefulInfo,
+              comments: [
+                {
+                    comment: addComment
+                }
+              ],
+              submittedBy:props.item.submittedBy,
+              teamMember:props.item.teamMember,
+              startDate:props.item.startDate,
+              endDate:props.item.endDate
+
+            }
+          )
+      
+      
+    }
+
+    fetch(`http://localhost:8080/update-product-details`,reqData2)
+    .then((result)=>{
+      result.json().then((resp)=>{
+        console.log("resp",resp);
+        
+      })})
+  }
+
+  const commentAction = () => {
+    setOpenComment(true);
+    const reqOpt2 = {
+      method: "GET",
+      headers: { "Content-Type": "application/json", mode: "no cors" },
+    };
+  
+
+      fetch(`http://localhost:8080/get-product-details/${props.item.projectId}`,reqOpt2).then((result)=>{
+        result.json().then((resp)=>{
+          console.log("resp",resp);
+          console.log("resp.comments",resp.comments)
+          setCommentArray(resp.comments);
+        })
+      })
+  };
+
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    setOpenComment(false);
     setAnchorEl(null);
   };
   const handleExpandClick = () => {
@@ -232,6 +368,74 @@ export default function CardTemplate(props) {
           <Button onClick={statusAction}>{status}</Button>
         </DialogActions>
       </Dialog>
+      <div>
+    <BootstrapDialog
+      onClose={handleClose}
+      open={openComment}
+      maxWidth={maxWidth}
+      fullWidth={fullWidth}
+    >
+      <BootstrapDialogTitle id="customized-dialog-title" onClose={()=>{
+            handleClose()
+        }}>
+        Comment History
+      </BootstrapDialogTitle>
+      <DialogContent>
+      <Box
+    component="form"
+    sx={{
+      '& > :not(style)': { m: 1 },
+    }}
+    noValidate
+    autoComplete="off"
+  >
+    <div class="row g-3" style={{display:'flex', flexDirection:'row', maxWidth:'inherit'}}>
+      <div class="col-md-10">
+      <TextField 
+        id="outlined-basic" 
+        label="Comment" 
+        variant="outlined" 
+        name="addComment"
+        value={addComment} 
+        onChange={ handleComment} 
+        style={{width:450}}
+          />
+      </div>
+      <div class="col-md-2">
+      <Button variant="contained" size='small' onClick={commentAdd}>Add</Button>
+      </div>
+      </div>
+      </Box>
+
+<TableContainer component={Paper}>
+<Table sx={{ minWidth: 500 }} aria-label="simple table">
+<TableHead>
+  <TableRow>
+    <TableCell><b>Comment</b> </TableCell>
+    <TableCell align="right"><b>Submitted By</b></TableCell>
+    <TableCell align="right"><b>Date</b></TableCell>
+  </TableRow>
+</TableHead>
+<TableBody>
+  {commentArray.map((row) => (
+    <TableRow
+      key={row}
+      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+    >
+      <TableCell component="th" scope="row">
+        {row.comment}
+      </TableCell>
+      <TableCell align="right">{row.userName}</TableCell>
+      <TableCell align="right">{row.commentDate}</TableCell>
+    </TableRow>
+  ))}
+</TableBody>
+</Table>
+</TableContainer>
+        
+      </DialogContent>
+    </BootstrapDialog>
+  </div>
       {/* <CardMedia
         component="img"
         height="194"
@@ -250,7 +454,7 @@ export default function CardTemplate(props) {
         {/* <Button aria-describedby={id} variant="contained" onClick={ (event)=> setPopOver(event.currentTarget)}>
         <CommentIcon color="primary"/>
       </Button> */}
-      <CommentIcon color="primary"  onClick={ (event)=> setPopOver(event.currentTarget)}/>
+      <CommentIcon color="primary"  onClick={ (event)=>commentAction()}/>
       <Popover
         id={id}
         open={openPopOver}
