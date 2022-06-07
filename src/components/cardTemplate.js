@@ -545,6 +545,7 @@ export default function CardTemplate(props) {
         </div>
       </CardContent>
       <CardActions>
+        <div class ="" >
       <Stack spacing={2} sx={{padding : "10px", display: "contents"}} direction="row">
         {
           props.item && props.item.comments.length >0 ?
@@ -574,6 +575,7 @@ export default function CardTemplate(props) {
          <Chip label={'sdfsdf'} variant="outlined"/>
          <Chip label={'sdgdfs'} /> */}
       </Stack>
+      </div>
       </CardActions>
       </Collapse>
     </Card>

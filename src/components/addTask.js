@@ -311,7 +311,7 @@ export default function AddTask() {
         {formErrors.projectTitle? <div style={{color:'red', fontSize:'10px', marginLeft:'10px'}}>{formErrors.projectTitle}</div> : null}
         </div>
         
-        <div class="col-md-12">
+        <div class="col-md-12" style={{paddingTop:"31px"}}>
         {/* <TextField
           id="standard-multiline-flexible"
           label="Comments"
@@ -334,7 +334,7 @@ export default function AddTask() {
         />
         {formErrors.comments? <div style={{color:'red', fontSize:'10px', marginLeft:'10px'}}>{formErrors.comments}</div> : null}
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" style={{marginTop:"11px"}}>
         {/* <input 
                 type='text'
                 value={value}
@@ -357,7 +357,7 @@ export default function AddTask() {
         {!value? <div style={{color:'red',fontSize:'10px', marginLeft:'10px'}}>{formErrors.submittedBy}</div> : null}
         </div>
 
-        <div class="col-md-12">
+        <div class="col-md-12" style={{marginTop:"13px"}} >
         <TextField
           id="standard-multiline-flexible"
           label="Useful Info"
