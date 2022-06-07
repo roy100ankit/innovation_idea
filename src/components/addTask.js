@@ -107,8 +107,8 @@ export default function AddTask() {
     comments:'',
     submittedBy:'',
     teamMember:'',
-    startDate:'',
-    endDate:''
+    startDate:new Date(),
+    endDate:new Date()
     // projectPhase:[]
 
   }
@@ -234,6 +234,7 @@ export default function AddTask() {
     }
     console.log('formvalues', formValues)
     if((Object.keys(formErrors).length===0) ){
+      console.log('formValues SUBMIT',formValues)
     dispatch(addProject(formValues))
     // setFormValues(initialValues)
     // setFormErrors({})

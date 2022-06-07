@@ -46,6 +46,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import PropTypes from 'prop-types';
 import CloseIcon from '@mui/icons-material/Close';
+import { Dialpad } from '@mui/icons-material';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -131,6 +132,19 @@ export default function CardTemplate(props) {
 
   useEffect( () => {
     console.log("commentArray",commentArray)
+    const reqOpt2 = {
+      method: "GET",
+      headers: { "Content-Type": "application/json", mode: "no cors" },
+    };
+  
+
+      fetch(`http://localhost:8080/get-product-details/${props.item.projectId}`,reqOpt2).then((result)=>{
+        result.json().then((resp)=>{
+          console.log("resp",resp);
+          console.log("resp.comments",resp.comments)
+          setCommentArray(resp.comments);
+        })
+      })
   },
   [commentArray] 
   ) 
@@ -141,6 +155,7 @@ export default function CardTemplate(props) {
   }
 
   const commentAdd =() => {
+    setAddComment('')
     const reqData2={
       method: 'PUT',
       headers:{
@@ -174,8 +189,9 @@ export default function CardTemplate(props) {
     .then((result)=>{
       result.json().then((resp)=>{
         console.log("resp",resp);
-        
+        // setCommentArray(resp.comments);
       })})
+      
   }
 
   const commentAction = () => {
@@ -418,6 +434,7 @@ export default function CardTemplate(props) {
 </TableHead>
 <TableBody>
   {commentArray.map((row) => (
+    
     <TableRow
       key={row}
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
