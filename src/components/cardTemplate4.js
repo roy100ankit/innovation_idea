@@ -231,5 +231,5 @@ export default function CardTemplate(props) {
         </CardContent>
       </Collapse>
     </Card>
-  );
+  )
 }

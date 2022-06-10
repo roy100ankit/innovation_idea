@@ -342,7 +342,7 @@ export default function EditTask(props) {
         {formErrors.projectTitle? <div style={{color:'red', fontSize:'10px', marginLeft:'10px'}}>{formErrors.projectTitle}</div> : null}
         </div>
         
-        <div class="col-md-12">
+        <div class="col-md-12" style={{marginTop:'27px'}}>
         {/* <TextField
           id="standard-multiline-flexible"
           label="Comments"
@@ -502,7 +502,7 @@ export default function EditTask(props) {
         onChange={(date) => setStartDate(date)} />
         </div>
         <p></p>
-        <div class="col-md-12" style={{marginLeft:'8px'}}>
+        <div class="col-md-12" style={{marginLeft:'8px' , marginTop:'25px'}}>
           <div>End date</div>
         <DatePicker
         selected={endDate} 

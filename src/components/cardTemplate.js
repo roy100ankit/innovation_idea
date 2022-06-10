@@ -345,7 +345,7 @@ export default function CardTemplate(props) {
         </div>
         </div>
         <div class="row g-3" style={{maxWidth:'inherit'}}>
-      <div class="col-md-12">
+      <div class="col-md-12" style={{marginTop:'30px'}}>
       {/* <Item> {props.status !== 'Not Started' ?<Avatar sx={{ bgcolor:  red[500] ,width: 24, height: 24}}>A</Avatar>: null}</Item> */}
       <Item> {props.status !== 'Not Started' ?<Chip size="small" label="Active" color="success" />: null}</Item>
       </div>
@@ -397,7 +397,7 @@ export default function CardTemplate(props) {
         Comment History
       </BootstrapDialogTitle>
       <DialogContent>
-      <Box
+      <Box style={{marginLeft : '-17px'}}
     component="form"
     sx={{
       '& > :not(style)': { m: 1 },
@@ -417,7 +417,7 @@ export default function CardTemplate(props) {
         style={{width:450}}
           />
       </div>
-      <div class="col-md-2">
+      <div class="col-md-2" style={{ marginTop :'25px', paddingLeft: '35px' }}>
       <Button variant="contained" size='small' onClick={commentAdd}>Add</Button>
       </div>
       </div>
